@@ -10,6 +10,7 @@ import { Toaster } from "sonner";
 
 import "../styles.css";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { DEFAULT_DESCRIPTION, DEFAULT_OG_IMAGE, SITE_NAME } from "../lib/site-seo";
 
 function NotFoundComponent() {
   return (
@@ -76,19 +77,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Kohat Business Directory — Discover Local Shops, Restaurants & Services" },
-      {
-        name: "description",
-        content:
-          "The complete directory of businesses across Kohat — shops, restaurants, cafés and services. Find WhatsApp, phone and directions for every local business.",
-      },
-      { name: "author", content: "Kohat Business Directory" },
-      { property: "og:site_name", content: "Kohat Business Directory" },
+      { title: "Kohat Business Directory — Local Shops, Restaurants & Services" },
+      { name: "description", content: DEFAULT_DESCRIPTION },
+      { name: "author", content: SITE_NAME },
+      { property: "og:site_name", content: SITE_NAME },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: DEFAULT_OG_IMAGE },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/logo.png", type: "image/png" },
+      { rel: "apple-touch-icon", href: "/logo.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "" },
       {

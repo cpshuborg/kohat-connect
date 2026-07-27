@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { mainCategories } from "@/data/categories";
 import { areas } from "@/data/shops";
+import { siteUrl } from "@/lib/site-seo";
 import { toast } from "sonner";
 
 export type WebpImage = { name: string; dataUrl: string; blob?: Blob };
@@ -545,7 +546,7 @@ export function ShopForm({ mode, initial, submitLabel, onSubmit }: Props) {
             <Label>Canonical URL (auto)</Label>
             <Input
               readOnly
-              value={`https://kohat-connect.lovable.app/shops/${slug || autoSlug || "your-business-slug"}`}
+              value={siteUrl(`/shops/${slug || autoSlug || "your-business-slug"}`)}
               className="bg-muted/40 font-mono text-xs"
             />
           </div>

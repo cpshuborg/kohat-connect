@@ -10,22 +10,17 @@ import {
   prepareRequestImage,
   submitListingRequest,
 } from "@/lib/listing-requests-api";
+import { KohatLogo } from "@/components/KohatLogo";
+import { pageHead, webPageJsonLd } from "@/lib/site-seo";
 
 export const Route = createFileRoute("/list-business")({
   head: () => {
-    const url = "https://kohat-connect.lovable.app/list-business";
     const title = "List Your Business — Kohat Business Directory";
     const description =
       "Submit your Kohat shop details — name, WhatsApp and address. Photo optional. We'll review and add you to the directory.";
     return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:url", content: url },
-      ],
-      links: [{ rel: "canonical", href: url }],
+      ...pageHead({ title, description, path: "/list-business" }),
+      scripts: [webPageJsonLd({ title, description, path: "/list-business" })],
     };
   },
   component: ListBusinessPage,
@@ -100,9 +95,7 @@ function ListBusinessPage() {
             <ArrowLeft className="h-4 w-4" />
             Back home
           </Link>
-          <Link to="/" className="font-display text-lg font-semibold">
-            Kohat<span className="text-primary">Business</span>
-          </Link>
+          <KohatLogo linkToHome imgClassName="h-10 sm:h-12" />
         </div>
       </header>
 

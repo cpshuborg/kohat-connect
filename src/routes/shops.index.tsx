@@ -21,6 +21,8 @@ import { mainCategories } from "@/data/categories";
 import { socials } from "@/data/home";
 import { ShopCard, Pagination, FeaturedShops } from "@/components/FeaturedShops";
 import { ListBusinessPromo } from "@/components/ListBusinessPromo";
+import { KohatLogo } from "@/components/KohatLogo";
+import { pageHead, webPageJsonLd } from "@/lib/site-seo";
 
 // Optional-only schema: do NOT use .default() here — that rewrites the URL
 // (307 on Lovable SSR / static hosts) and is a common cause of /shops 404s.
@@ -53,23 +55,12 @@ function normalizeSearch(search: z.infer<typeof searchSchema>): ShopSearch {
 export const Route = createFileRoute("/shops/")({
   validateSearch: searchSchema,
   head: () => {
-    const url = "https://kohat-connect.lovable.app/shops";
     const title = "All Businesses in Kohat — Kohat Business Directory";
     const description =
       "Browse every business in Kohat — restaurants, cafés, biryani, bike shops, furniture, salons, workshops and more. Contact owners directly on WhatsApp or phone.";
     return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:type", content: "website" },
-        { property: "og:url", content: url },
-        { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: title },
-        { name: "twitter:description", content: description },
-      ],
-      links: [{ rel: "canonical", href: url }],
+      ...pageHead({ title, description, path: "/shops" }),
+      scripts: [webPageJsonLd({ title, description, path: "/shops" })],
     };
   },
 
@@ -340,12 +331,7 @@ function TopBar() {
   return (
     <header className="border-b border-border bg-background">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link to="/" className="flex items-baseline gap-2">
-          <span className="font-display text-2xl font-semibold tracking-tight text-foreground">
-            Kohat<span className="text-primary">Business</span>
-          </span>
-          <span className="font-urdu text-lg text-muted-foreground">کوہاٹ</span>
-        </Link>
+        <KohatLogo linkToHome />
         <nav className="flex items-center gap-2">
           <Link
             to="/about"

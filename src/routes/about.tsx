@@ -1,26 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Compass, Heart, Users } from "lucide-react";
 import { socials, about } from "@/data/home";
+import { KohatLogo } from "@/components/KohatLogo";
+import { organizationJsonLd, pageHead, webPageJsonLd } from "@/lib/site-seo";
 
 export const Route = createFileRoute("/about")({
   head: () => {
-    const url = "https://kohat-connect.lovable.app/about";
     const title = "About — Kohat Business Directory";
     const description =
       "Kohat Business Directory is a free community listing of every shop, café, workshop and service across Kohat, KPK — built to help buyers reach local businesses directly.";
     return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:type", content: "website" },
-        { property: "og:url", content: url },
-        { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: title },
-        { name: "twitter:description", content: description },
+      ...pageHead({ title, description, path: "/about" }),
+      scripts: [
+        webPageJsonLd({ title, description, path: "/about" }),
+        organizationJsonLd(),
       ],
-      links: [{ rel: "canonical", href: url }],
     };
   },
   component: AboutPage,
@@ -109,12 +103,7 @@ function TopBar() {
   return (
     <header className="border-b border-border bg-background">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link to="/" className="flex items-baseline gap-2">
-          <span className="font-display text-2xl font-semibold tracking-tight text-foreground">
-            Kohat<span className="text-primary">Business</span>
-          </span>
-          <span className="font-urdu text-lg text-muted-foreground">کوہاٹ</span>
-        </Link>
+        <KohatLogo linkToHome />
         <nav className="flex items-center gap-2">
           <Link to="/shops" className="hidden rounded-sm px-3 py-2 text-sm text-foreground transition hover:text-primary sm:inline-flex">
             Shops

@@ -20,6 +20,8 @@ import { enrichShop } from "@/data/shops";
 import { fetchShopBySlugWithFallback } from "@/data/shops-db";
 import { socials } from "@/data/home";
 import { FeaturedShops } from "@/components/FeaturedShops";
+import { KohatLogo } from "@/components/KohatLogo";
+import { localBusinessJsonLd, pageHead } from "@/lib/site-seo";
 
 export const Route = createFileRoute("/shops/$slug")({
   loader: async ({ params }) => {
@@ -28,14 +30,15 @@ export const Route = createFileRoute("/shops/$slug")({
     return { shop: enrichShop(shop) };
   },
   head: ({ loaderData, params }) => {
-    const canonical = `https://kohat-connect.lovable.app/shops/${params.slug}`;
+    const path = `/shops/${params.slug}`;
     if (!loaderData) {
       return {
-        meta: [
-          { title: "Business not found — Kohat Business Directory" },
-          { name: "robots", content: "noindex" },
-        ],
-        links: [{ rel: "canonical", href: canonical }],
+        ...pageHead({
+          title: "Business not found — Kohat Business Directory",
+          description: "This business listing could not be found in the Kohat Business Directory.",
+          path,
+          noindex: true,
+        }),
       };
     }
     const { shop } = loaderData;
@@ -45,20 +48,27 @@ export const Route = createFileRoute("/shops/$slug")({
     const description = shop.metaDescription?.trim() || autoDesc;
     const image = shop.image;
     return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:type", content: "business.business" },
-        { property: "og:url", content: canonical },
-        ...(image ? [{ property: "og:image", content: image } as const] : []),
-        { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: title },
-        { name: "twitter:description", content: description },
-        ...(image ? [{ name: "twitter:image", content: image } as const] : []),
+      ...pageHead({
+        title,
+        description,
+        path,
+        image: image || undefined,
+        type: "business.business",
+      }),
+      scripts: [
+        localBusinessJsonLd({
+          name: shop.name,
+          tagline: shop.tagline,
+          image: shop.image,
+          phone: shop.phone,
+          whatsapp: shop.whatsapp,
+          address: shop.address,
+          area: shop.area,
+          slug: shop.slug,
+          categoryLabel: shop.categoryLabel,
+          website: shop.website,
+        }),
       ],
-      links: [{ rel: "canonical", href: canonical }],
     };
   },
 
@@ -433,12 +443,7 @@ function TopBar() {
   return (
     <header className="border-b border-border bg-background">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link to="/" className="flex items-baseline gap-2">
-          <span className="font-display text-2xl font-semibold tracking-tight text-foreground">
-            Kohat<span className="text-primary">Business</span>
-          </span>
-          <span className="font-urdu text-lg text-muted-foreground">کوہاٹ</span>
-        </Link>
+        <KohatLogo linkToHome />
         <nav className="flex items-center gap-2">
           <Link
             to="/shops"
