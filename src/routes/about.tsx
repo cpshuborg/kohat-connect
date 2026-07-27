@@ -6,9 +6,9 @@ import { organizationJsonLd, pageHead, webPageJsonLd } from "@/lib/site-seo";
 
 export const Route = createFileRoute("/about")({
   head: () => {
-    const title = "About — Kohat Business Directory";
+    const title = "About - Kohat Business Directory";
     const description =
-      "Kohat Business Directory is a free community listing of every shop, café, workshop and service across Kohat, KPK — built to help buyers reach local businesses directly.";
+      "Kohat Business Directory is a free community listing of every shop, café, workshop and service across Kohat, KPK - built to help buyers reach local businesses directly.";
     return {
       ...pageHead({ title, description, path: "/about" }),
       scripts: [
@@ -51,7 +51,7 @@ function AboutPage() {
             {
               icon: Users,
               title: "No middleman",
-              body: "Buyers reach shops directly on WhatsApp or phone — no sign-ups, no fees.",
+              body: "Buyers reach shops directly on WhatsApp or phone - no sign-ups, no fees.",
             },
             {
               icon: Heart,
@@ -124,7 +124,7 @@ function Footer() {
   return (
     <footer className="mt-8 border-t border-border bg-secondary/40">
       <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-3 px-6 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center">
-        <p>© {new Date().getFullYear()} Kohat Shops — a community directory.</p>
+        <p>© {new Date().getFullYear()} Kohat Shops - a community directory.</p>
         <div className="flex items-center gap-4">
           <Link to="/about" className="hover:text-primary">About</Link>
           <Link to="/contact" className="hover:text-primary">Contact</Link>

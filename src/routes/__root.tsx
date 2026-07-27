@@ -77,7 +77,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Kohat Business Directory — Local Shops, Restaurants & Services" },
+      { title: "Kohat Business Directory - Local Shops, Restaurants & Services" },
       { name: "description", content: DEFAULT_DESCRIPTION },
       { name: "author", content: SITE_NAME },
       { property: "og:site_name", content: SITE_NAME },

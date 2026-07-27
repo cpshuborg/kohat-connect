@@ -7,7 +7,7 @@ import { createShop } from "@/lib/shops-api";
 export const Route = createFileRoute("/admin/shops/new")({
   head: () => ({
     meta: [
-      { title: "Create Shop — Admin" },
+      { title: "Create Shop - Admin" },
       { name: "robots", content: "noindex" },
     ],
   }),

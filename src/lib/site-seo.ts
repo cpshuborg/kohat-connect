@@ -1,4 +1,4 @@
-/** Public site URL — set VITE_SITE_URL in production (e.g. https://mycitycenter.online) */
+/** Public site URL - set VITE_SITE_URL in production (e.g. https://mycitycenter.online) */
 export const SITE_URL = (
   import.meta.env.VITE_SITE_URL as string | undefined
 )?.replace(/\/$/, "") || "https://mycitycenter.online";
@@ -6,7 +6,7 @@ export const SITE_URL = (
 export const SITE_NAME = "Kohat Business Directory";
 
 export const DEFAULT_DESCRIPTION =
-  "Discover every business in Kohat — restaurants, cafés, biryani spots, bike shops, salons, tailors, workshops and more. Contact owners directly on WhatsApp or phone.";
+  "Discover every business in Kohat - restaurants, cafés, biryani spots, bike shops, salons, tailors, workshops and more. Contact owners directly on WhatsApp or phone.";
 
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/logo.png`;
 

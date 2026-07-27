@@ -18,7 +18,7 @@ function toShop(row: ShopRow, coord?: Pick<CoordRow, "lat" | "lng">): Shop {
   }));
 
   // Derive main+sub. New rows store `category` = main key, `subcategory` = sub key.
-  // Older rows may have `category` set to what is really a sub-category key —
+  // Older rows may have `category` set to what is really a sub-category key -
   // fall back to inferring the main from the sub taxonomy.
   let mainKey = row.category;
   let mainL = row.category_label || mainLabel(row.category);

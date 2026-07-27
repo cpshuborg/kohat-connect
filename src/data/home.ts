@@ -43,7 +43,7 @@ export const heroImages = {
 export const tagline = {
   english: "Discover Businesses in Kohat",
   urdu: "کوہاٹ کے کاروبار، ایک جگہ پر",
-  sub: "The complete directory of every local business — from biryani stalls to bike mechanics.",
+  sub: "The complete directory of every local business - from biryani stalls to bike mechanics.",
 };
 
 export const featuredShops: FeaturedShop[] = [
@@ -108,7 +108,7 @@ const _also_available = [shopFabric, shopBus];
 
 export const about = {
   headline: "Every shop in Kohat, one page away.",
-  body: "A community-built directory covering more than a thousand local businesses across the city — restaurants, mechanics, tailors, cafés, mobile shops and more. Free to browse, always current.",
+  body: "A community-built directory covering more than a thousand local businesses across the city - restaurants, mechanics, tailors, cafés, mobile shops and more. Free to browse, always current.",
 };
 
 export const socials = {

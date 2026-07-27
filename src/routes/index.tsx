@@ -46,7 +46,7 @@ import {
   websiteJsonLd,
 } from "@/lib/site-seo";
 
-const HOME_TITLE = "Kohat Business Directory — Local Shops, Restaurants & Services";
+const HOME_TITLE = "Kohat Business Directory - Local Shops, Restaurants & Services";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -235,7 +235,7 @@ function Hero() {
             <ListBusinessPromo variant="hero" className="w-full shrink-0 lg:w-auto lg:max-w-sm" />
           </div>
 
-          {/* 3. Browse categories — glass panel */}
+          {/* 3. Browse categories - glass panel */}
           <div className="rounded-sm border border-white/20 bg-white/10 p-4 shadow-[0_24px_80px_-30px_oklch(0_0_0_/_0.6)] backdrop-blur-xl sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-200 fill-mode-both">
             <div className="mb-4 flex items-end justify-between gap-4 sm:mb-5">
               <div>
@@ -400,19 +400,19 @@ function HowItWorks() {
       icon: Search,
       title: "Search or browse",
       urdu: "تلاش کریں",
-      body: "Find a shop by name, category or area — from biryani stalls on Bannu Road to bike mechanics in KDA.",
+      body: "Find a shop by name, category or area - from biryani stalls on Bannu Road to bike mechanics in KDA.",
     },
     {
       icon: MousePointerClick,
       title: "Open the shop page",
       urdu: "دکان کھولیں",
-      body: "See photos, address, timings, gallery and a map location — everything you need before you head out.",
+      body: "See photos, address, timings, gallery and a map location - everything you need before you head out.",
     },
     {
       icon: PhoneCall,
       title: "Call or WhatsApp",
       urdu: "رابطہ کریں",
-      body: "Contact the shop directly on WhatsApp or phone. No middleman, no signup — just tap and talk.",
+      body: "Contact the shop directly on WhatsApp or phone. No middleman, no signup - just tap and talk.",
     },
   ];
   return (
@@ -427,7 +427,7 @@ function HowItWorks() {
             Three steps to reach any shop in Kohat
           </h2>
           <p className="mt-3 text-base text-muted-foreground">
-            No apps to install, no accounts to create. Just browse, find and contact — the way the bazaar has always worked.
+            No apps to install, no accounts to create. Just browse, find and contact - the way the bazaar has always worked.
           </p>
         </div>
         <ol className="grid grid-cols-1 gap-5 sm:grid-cols-3">

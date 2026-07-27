@@ -37,9 +37,9 @@ export type Shop = {
   facebook?: string;
   instagram?: string;
   website?: string;
-  /** Optional SEO override — falls back to auto-generated title. */
+  /** Optional SEO override - falls back to auto-generated title. */
   metaTitle?: string;
-  /** Optional SEO override — falls back to tagline. */
+  /** Optional SEO override - falls back to tagline. */
   metaDescription?: string;
 };
 

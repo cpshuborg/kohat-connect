@@ -288,7 +288,7 @@ export function ShopForm({ mode, initial, submitLabel, onSubmit }: Props) {
               <SelectContent>
                 {mainCategories.map((m) => (
                   <SelectItem key={m.key} value={m.key}>
-                    {m.label} — <span className="font-urdu">{m.urdu}</span>
+                    {m.label} - <span className="font-urdu">{m.urdu}</span>
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -303,7 +303,7 @@ export function ShopForm({ mode, initial, submitLabel, onSubmit }: Props) {
               <SelectContent>
                 {(mainCategories.find((m) => m.key === category)?.sub ?? []).map((s) => (
                   <SelectItem key={s.key} value={s.key}>
-                    {s.label} — <span className="font-urdu">{s.urdu}</span>
+                    {s.label} - <span className="font-urdu">{s.urdu}</span>
                   </SelectItem>
                 ))}
               </SelectContent>

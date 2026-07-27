@@ -7,7 +7,7 @@ import { pageHead, webPageJsonLd } from "@/lib/site-seo";
 
 export const Route = createFileRoute("/contact")({
   head: () => {
-    const title = "Contact — Kohat Business Directory";
+    const title = "Contact - Kohat Business Directory";
     const description =
       "Get in touch with Kohat Business Directory on WhatsApp, phone or email. List your business or send us a message using the form.";
     return {
@@ -56,7 +56,7 @@ function ContactPage() {
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
             Want to list your shop, report a change, or just say hello? Reach us
-            the way that suits you — WhatsApp is fastest.
+            the way that suits you - WhatsApp is fastest.
           </p>
         </div>
       </section>
@@ -239,7 +239,7 @@ function Footer() {
   return (
     <footer className="mt-8 border-t border-border bg-secondary/40">
       <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-3 px-6 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center">
-        <p>© {new Date().getFullYear()} Kohat Shops — a community directory.</p>
+        <p>© {new Date().getFullYear()} Kohat Shops - a community directory.</p>
         <div className="flex items-center gap-4">
           <Link to="/about" className="hover:text-primary">About</Link>
           <Link to="/contact" className="hover:text-primary">Contact</Link>

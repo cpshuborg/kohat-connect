@@ -15,9 +15,9 @@ import { pageHead, webPageJsonLd } from "@/lib/site-seo";
 
 export const Route = createFileRoute("/list-business")({
   head: () => {
-    const title = "List Your Business — Kohat Business Directory";
+    const title = "List Your Business - Kohat Business Directory";
     const description =
-      "Submit your Kohat shop details — name, WhatsApp and address. Photo optional. We'll review and add you to the directory.";
+      "Submit your Kohat shop details - name, WhatsApp and address. Photo optional. We'll review and add you to the directory.";
     return {
       ...pageHead({ title, description, path: "/list-business" }),
       scripts: [webPageJsonLd({ title, description, path: "/list-business" })],
@@ -68,7 +68,7 @@ function ListBusinessPage() {
         address,
         image,
       });
-      toast.success("Request submitted — we'll review it soon", { id: "list-biz" });
+      toast.success("Request submitted - we'll review it soon", { id: "list-biz" });
       setDone(true);
       setShopName("");
       setWhatsapp("");
@@ -107,7 +107,7 @@ function ListBusinessPage() {
           List your business
         </h1>
         <p className="mt-3 max-w-xl text-sm text-muted-foreground sm:text-base">
-          Tell us about your shop. Add a photo and contact details — our team will
+          Tell us about your shop. Add a photo and contact details - our team will
           review and publish it on the directory.
         </p>
 
@@ -169,7 +169,7 @@ function ListBusinessPage() {
                 id="address"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder="Street, area, landmark — Kohat"
+                placeholder="Street, area, landmark - Kohat"
                 rows={3}
                 required
               />
@@ -207,7 +207,7 @@ function ListBusinessPage() {
                     {converting ? "Processing…" : "Upload a photo"}
                   </span>
                   <span className="text-xs text-muted-foreground">
-                    JPG, PNG or WEBP — converted automatically
+                    JPG, PNG or WEBP - converted automatically
                   </span>
                   <input
                     type="file"

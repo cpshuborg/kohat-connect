@@ -34,7 +34,7 @@ export const Route = createFileRoute("/shops/$slug")({
     if (!loaderData) {
       return {
         ...pageHead({
-          title: "Business not found — Kohat Business Directory",
+          title: "Business not found - Kohat Business Directory",
           description: "This business listing could not be found in the Kohat Business Directory.",
           path,
           noindex: true,
@@ -42,7 +42,7 @@ export const Route = createFileRoute("/shops/$slug")({
       };
     }
     const { shop } = loaderData;
-    const autoTitle = `${shop.name} — ${shop.subcategoryLabel ?? shop.categoryLabel} in ${shop.area}, Kohat`;
+    const autoTitle = `${shop.name} - ${shop.subcategoryLabel ?? shop.categoryLabel} in ${shop.area}, Kohat`;
     const autoDesc = `${shop.tagline} Contact ${shop.name} in ${shop.area}, Kohat directly on WhatsApp or phone.`;
     const title = shop.metaTitle?.trim() || autoTitle;
     const description = shop.metaDescription?.trim() || autoDesc;
@@ -393,7 +393,7 @@ function ShopDetailPage() {
 
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
               <StatCard label="Category" value={shop.categoryLabel} />
-              <StatCard label="Sub category" value={shop.subcategoryLabel ?? "—"} />
+              <StatCard label="Sub category" value={shop.subcategoryLabel ?? "-"} />
               <StatCard label="Area" value={shop.area} />
               <StatCard label="Since" value={shop.established} />
             </div>
@@ -490,7 +490,7 @@ function Footer() {
     <footer className="mt-24 border-t border-border bg-secondary/40">
       <div className="mx-auto max-w-7xl px-6 py-10 text-sm text-muted-foreground">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <p>© {new Date().getFullYear()} Kohat Shops — a community directory.</p>
+          <p>© {new Date().getFullYear()} Kohat Shops - a community directory.</p>
           <div className="flex flex-wrap items-center gap-4">
             <Link to="/about" className="hover:text-primary">About</Link>
             <Link to="/contact" className="hover:text-primary">Contact</Link>

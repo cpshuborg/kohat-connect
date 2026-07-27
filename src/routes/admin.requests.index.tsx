@@ -25,7 +25,7 @@ import {
 export const Route = createFileRoute("/admin/requests/")({
   head: () => ({
     meta: [
-      { title: "Listing requests — Admin" },
+      { title: "Listing requests - Admin" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -154,7 +154,7 @@ function RequestCard({
 
         <p className="flex items-start gap-2 text-sm text-muted-foreground">
           <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-          <span>{r.address || "—"}</span>
+          <span>{r.address || "-"}</span>
         </p>
 
         <div className="flex flex-wrap gap-2">

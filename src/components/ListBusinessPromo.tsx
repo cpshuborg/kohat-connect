@@ -31,7 +31,7 @@ export function ListBusinessPromo({
           isHero ? "text-primary-foreground/80" : "text-muted-foreground",
         )}
       >
-        Own a shop in Kohat? List it free — buyers reach you directly via WhatsApp
+        Own a shop in Kohat? List it free - buyers reach you directly via WhatsApp
         or call.
       </p>
       <div className="mt-3 flex items-center justify-between gap-3 sm:mt-4">

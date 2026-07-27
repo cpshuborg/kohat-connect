@@ -8,7 +8,7 @@ import { updateShop } from "@/lib/shops-api";
 export const Route = createFileRoute("/admin/shops/$slug/edit")({
   head: () => ({
     meta: [
-      { title: "Edit Shop — Admin" },
+      { title: "Edit Shop - Admin" },
       { name: "robots", content: "noindex" },
     ],
   }),

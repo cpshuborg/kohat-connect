@@ -23,7 +23,7 @@ import { AdminNav } from "@/components/admin/AdminNav";
 export const Route = createFileRoute("/admin/shops/")({
   head: () => ({
     meta: [
-      { title: "Shops — Admin" },
+      { title: "Shops - Admin" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -139,7 +139,7 @@ function AdminShopsList() {
                         <Star className="h-3 w-3" /> Featured
                       </span>
                     ) : (
-                      <span className="text-xs text-muted-foreground">—</span>
+                      <span className="text-xs text-muted-foreground">-</span>
                     )}
                   </td>
                   <td className="px-4 py-3 text-right">
@@ -196,7 +196,7 @@ function AdminShopsList() {
         <p className="text-xs text-muted-foreground">
           {isLoading
             ? "Loading shops…"
-            : `Showing ${filtered.length} of ${shops.length} shops.${usingFallback ? " (Showing sample data — no shops in the database yet.)" : ""}`}
+            : `Showing ${filtered.length} of ${shops.length} shops.${usingFallback ? " (Showing sample data - no shops in the database yet.)" : ""}`}
         </p>
       </div>
     </div>

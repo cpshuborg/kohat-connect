@@ -1,4 +1,4 @@
-// Client-side CRUD + storage helpers for shops. No auth required (yet) —
+// Client-side CRUD + storage helpers for shops. No auth required (yet) -
 // RLS policies allow anon writes; tighten once an admin role is added.
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
@@ -12,7 +12,7 @@ type ShopUpdate = Database["public"]["Tables"]["shops"]["Update"];
 
 async function uploadWebp(image: WebpImage, path: string): Promise<string> {
   if (!image.blob) {
-    // No blob means it's an existing image URL — just return it.
+    // No blob means it's an existing image URL - just return it.
     return image.dataUrl;
   }
   const { error } = await supabase.storage
@@ -141,7 +141,7 @@ export async function deleteShop(slug: string) {
   const { error: delErr } = await supabase.from("shops").delete().eq("id", shop.id);
   if (delErr) throw new Error(delErr.message);
 
-  // Best-effort storage cleanup — collect paths from public URLs
+  // Best-effort storage cleanup - collect paths from public URLs
   const urls: string[] = [shop.cover_image, ...(shop.gallery ?? [])].filter(Boolean);
   const prefix = `/storage/v1/object/public/${BUCKET}/`;
   const paths = urls

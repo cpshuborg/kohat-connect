@@ -24,7 +24,7 @@ import { ListBusinessPromo } from "@/components/ListBusinessPromo";
 import { KohatLogo } from "@/components/KohatLogo";
 import { pageHead, webPageJsonLd } from "@/lib/site-seo";
 
-// Optional-only schema: do NOT use .default() here — that rewrites the URL
+// Optional-only schema: do NOT use .default() here - that rewrites the URL
 // (307 on Lovable SSR / static hosts) and is a common cause of /shops 404s.
 const searchSchema = z.object({
   q: z.string().optional().catch(undefined),
@@ -55,9 +55,9 @@ function normalizeSearch(search: z.infer<typeof searchSchema>): ShopSearch {
 export const Route = createFileRoute("/shops/")({
   validateSearch: searchSchema,
   head: () => {
-    const title = "All Businesses in Kohat — Kohat Business Directory";
+    const title = "All Businesses in Kohat - Kohat Business Directory";
     const description =
-      "Browse every business in Kohat — restaurants, cafés, biryani, bike shops, furniture, salons, workshops and more. Contact owners directly on WhatsApp or phone.";
+      "Browse every business in Kohat - restaurants, cafés, biryani, bike shops, furniture, salons, workshops and more. Contact owners directly on WhatsApp or phone.";
     return {
       ...pageHead({ title, description, path: "/shops" }),
       scripts: [webPageJsonLd({ title, description, path: "/shops" })],
@@ -143,7 +143,7 @@ function ShopsPage() {
 
       <section className="mx-auto max-w-7xl px-6 pb-24 pt-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-          {/* Filters — desktop */}
+          {/* Filters - desktop */}
           <aside className="hidden lg:col-span-3 lg:block">
             <Filters
               category={category}
@@ -773,7 +773,7 @@ function MapSection({ shops: list }: { shops: Shop[] }) {
 
         {list.length === 0 && (
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            No businesses match — clear a filter to see pins.
+            No businesses match - clear a filter to see pins.
           </p>
         )}
       </div>

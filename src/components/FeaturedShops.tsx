@@ -150,7 +150,7 @@ export function FeaturedShops({
   className,
   title = "Featured businesses in Kohat",
   eyebrow = "Handpicked",
-  description = "Local favourites worth a visit — vetted by us, loved by the city.",
+  description = "Local favourites worth a visit - vetted by us, loved by the city.",
   items,
   showLink = false,
   linkLabel = "See all businesses →",
