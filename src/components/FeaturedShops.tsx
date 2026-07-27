@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useShops } from "@/hooks/use-shops";
+import { ListBusinessPromo } from "@/components/ListBusinessPromo";
 
 export interface ShopCardItem {
   slug: string;
@@ -152,8 +153,8 @@ export function FeaturedShops({
   description = "Local favourites worth a visit — vetted by us, loved by the city.",
   items,
   showLink = false,
-  linkHref = "/shops",
   linkLabel = "See all businesses →",
+  showPromo = false,
 }: {
   className?: string;
   title?: string;
@@ -161,8 +162,8 @@ export function FeaturedShops({
   description?: string;
   items?: ShopCardItem[];
   showLink?: boolean;
-  linkHref?: string;
   linkLabel?: string;
+  showPromo?: boolean;
 }) {
   const { shops } = useShops();
   const defaultItems = useMemo(() => shops.filter((s) => s.featured), [shops]);
@@ -182,8 +183,15 @@ export function FeaturedShops({
   return (
     <section className={cn("border-t border-border bg-background px-6 py-12 sm:py-16", className)}>
       <div className="mx-auto max-w-7xl">
-        <div className="mb-6 flex items-end justify-between sm:mb-8">
-          <div>
+        <div
+          className={cn(
+            "mb-6 sm:mb-8",
+            showPromo
+              ? "grid grid-cols-1 items-end gap-6 lg:grid-cols-12 lg:gap-8"
+              : "flex items-end justify-between",
+          )}
+        >
+          <div className={showPromo ? "lg:col-span-7" : undefined}>
             <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
               {eyebrow}
             </p>
@@ -194,13 +202,20 @@ export function FeaturedShops({
               {description}
             </p>
           </div>
-          {showLink && (
-            <a
-              href={linkHref}
-              className="hidden text-sm font-medium text-primary underline-offset-4 hover:underline sm:inline"
-            >
-              {linkLabel}
-            </a>
+          {showPromo ? (
+            <div className="lg:col-span-5">
+              <ListBusinessPromo />
+            </div>
+          ) : (
+            showLink && (
+              <Link
+                to="/shops"
+                search={{}}
+                className="hidden text-sm font-medium text-primary underline-offset-4 hover:underline sm:inline"
+              >
+                {linkLabel}
+              </Link>
+            )
           )}
         </div>
 

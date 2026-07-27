@@ -20,16 +20,35 @@ import { useShops } from "@/hooks/use-shops";
 import { mainCategories } from "@/data/categories";
 import { socials } from "@/data/home";
 import { ShopCard, Pagination, FeaturedShops } from "@/components/FeaturedShops";
+import { ListBusinessPromo } from "@/components/ListBusinessPromo";
 
+// Optional-only schema: do NOT use .default() here — that rewrites the URL
+// (307 on Lovable SSR / static hosts) and is a common cause of /shops 404s.
 const searchSchema = z.object({
-  q: z.string().catch("").default(""),
-  category: z.string().catch("").default(""),
-  sub: z.string().catch("").default(""),
-  area: z.string().catch("").default(""),
-  sort: z.string().catch("featured").default("featured"),
+  q: z.string().optional().catch(undefined),
+  category: z.string().optional().catch(undefined),
+  sub: z.string().optional().catch(undefined),
+  area: z.string().optional().catch(undefined),
+  sort: z.string().optional().catch(undefined),
 });
 
-type ShopSearch = z.infer<typeof searchSchema>;
+type ShopSearch = {
+  q: string;
+  category: string;
+  sub: string;
+  area: string;
+  sort: string;
+};
+
+function normalizeSearch(search: z.infer<typeof searchSchema>): ShopSearch {
+  return {
+    q: search.q ?? "",
+    category: search.category ?? "",
+    sub: search.sub ?? "",
+    area: search.area ?? "",
+    sort: search.sort ?? "featured",
+  };
+}
 
 export const Route = createFileRoute("/shops/")({
   validateSearch: searchSchema,
@@ -58,7 +77,8 @@ export const Route = createFileRoute("/shops/")({
 });
 
 function ShopsPage() {
-  const { q, category, sub, area, sort } = Route.useSearch();
+  const raw = Route.useSearch();
+  const { q, category, sub, area, sort } = normalizeSearch(raw);
   const navigate = Route.useNavigate();
   const [qInput, setQInput] = useState(q);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -66,6 +86,28 @@ function ShopsPage() {
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 6;
   const { shops } = useShops();
+
+  // Keep the search box in sync with the URL (chips, back/forward, reset).
+  useEffect(() => {
+    setQInput(q);
+  }, [q]);
+
+  const applySearch = (patch: Record<string, string | undefined>) => {
+    navigate({
+      search: (prev) => {
+        const next: Record<string, string | undefined> = { ...prev, ...patch };
+        for (const key of Object.keys(next)) {
+          const value = next[key];
+          if (value === "" || value === undefined) {
+            next[key] = undefined;
+          } else if (key === "sort" && value === "featured") {
+            next[key] = undefined;
+          }
+        }
+        return next;
+      },
+    });
+  };
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -106,15 +148,7 @@ function ShopsPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <TopBar />
-      <PageHeader
-        total={shops.length}
-        showing={filtered.length}
-        q={qInput}
-        setQ={setQInput}
-        onSubmit={(value) =>
-          navigate({ search: (prev: ShopSearch) => ({ ...prev, q: value }) })
-        }
-      />
+      <PageHeader total={shops.length} showing={filtered.length} />
 
       <section className="mx-auto max-w-7xl px-6 pb-24 pt-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
@@ -125,19 +159,15 @@ function ShopsPage() {
               sub={sub}
               area={area}
               sort={sort}
-              onChange={(patch) =>
-                navigate({ search: (prev: ShopSearch) => ({ ...prev, ...patch }) })
-              }
-              onClear={() =>
-                navigate({ search: () => ({ q: "", category: "", sub: "", area: "", sort: "featured" }) })
-              }
+              onChange={applySearch}
+              onClear={() => navigate({ search: {} })}
             />
           </aside>
 
           {/* Results */}
           <div className="lg:col-span-9">
-            <div className="mb-5 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
+            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
                 <button
                   onClick={() => setFiltersOpen(true)}
                   className="inline-flex items-center gap-2 rounded-sm border border-border bg-card px-3 py-2 text-sm font-medium lg:hidden"
@@ -150,17 +180,39 @@ function ShopsPage() {
                     </span>
                   )}
                 </button>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    applySearch({ q: qInput.trim() || undefined });
+                  }}
+                  className="flex min-w-0 flex-1 items-center gap-2 rounded-sm border border-border bg-card p-1.5 sm:max-w-md"
+                >
+                  <div className="flex min-w-0 flex-1 items-center gap-2 px-2">
+                    <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    <input
+                      value={qInput}
+                      onChange={(e) => setQInput(e.target.value)}
+                      type="search"
+                      placeholder="Search shops, food, areas…"
+                      className="w-full min-w-0 bg-transparent py-2 text-sm placeholder:text-muted-foreground focus:outline-none"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="shrink-0 rounded-sm bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+                  >
+                    Search
+                  </button>
+                </form>
                 <ActiveChips
                   q={q}
                   category={category}
                   sub={sub}
                   area={area}
-                  onClear={(key) =>
-                    navigate({ search: (prev: ShopSearch) => ({ ...prev, [key]: "" }) })
-                  }
+                  onClear={(key) => applySearch({ [key]: undefined })}
                 />
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex shrink-0 items-center gap-3">
                 <div className="hidden items-center gap-1 rounded-sm border border-border bg-card p-1 sm:flex">
                   <button
                     type="button"
@@ -195,11 +247,7 @@ function ShopsPage() {
                   Sort
                   <select
                     value={sort}
-                    onChange={(e) =>
-                      navigate({
-                        search: (prev: ShopSearch) => ({ ...prev, sort: e.target.value }),
-                      })
-                    }
+                    onChange={(e) => applySearch({ sort: e.target.value })}
                     className="rounded-sm border border-border bg-card px-2 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                   >
                     <option value="featured">Featured first</option>
@@ -268,12 +316,14 @@ function ShopsPage() {
               sub={sub}
               area={area}
               sort={sort}
-              onChange={(patch) =>
-                navigate({ search: (prev: ShopSearch) => ({ ...prev, ...patch }) })
-              }
-              onClear={() =>
-                navigate({ search: () => ({ q: "", category: "", sub: "", area: "", sort: "featured" }) })
-              }
+              onChange={(patch) => {
+                applySearch(patch);
+                setFiltersOpen(false);
+              }}
+              onClear={() => {
+                navigate({ search: {} });
+                setFiltersOpen(false);
+              }}
             />
           </div>
         </div>
@@ -334,56 +384,27 @@ function TopBar() {
 function PageHeader({
   total,
   showing,
-  q,
-  setQ,
-  onSubmit,
 }: {
   total: number;
   showing: number;
-  q: string;
-  setQ: (v: string) => void;
-  onSubmit: (v: string) => void;
 }) {
   return (
     <section className="border-b border-border bg-secondary/40 px-6 py-12">
-      <div className="mx-auto max-w-7xl">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-          Directory
-        </p>
-        <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 className="font-display text-3xl font-semibold sm:text-4xl">
-              All businesses in Kohat
-            </h1>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Showing <span className="font-medium text-foreground">{showing}</span> of{" "}
-              {total} listings
-            </p>
-          </div>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              onSubmit(q);
-            }}
-            className="flex w-full max-w-md items-center gap-2 rounded-sm border border-border bg-card p-1.5"
-          >
-            <div className="flex flex-1 items-center gap-2 px-2">
-              <Search className="h-4 w-4 text-muted-foreground" />
-              <input
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                type="search"
-                placeholder="Search shops, food, areas…"
-                className="w-full bg-transparent py-2 text-sm placeholder:text-muted-foreground focus:outline-none"
-              />
-            </div>
-            <button
-              type="submit"
-              className="rounded-sm bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
-            >
-              Search
-            </button>
-          </form>
+      <div className="mx-auto grid max-w-7xl grid-cols-1 items-end gap-6 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:col-span-7">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+            Directory
+          </p>
+          <h1 className="mt-2 font-display text-3xl font-semibold sm:text-4xl">
+            All businesses in Kohat
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Showing <span className="font-medium text-foreground">{showing}</span> of{" "}
+            {total} listings
+          </p>
+        </div>
+        <div className="lg:col-span-5">
+          <ListBusinessPromo />
         </div>
       </div>
     </section>
@@ -402,7 +423,7 @@ function Filters({
   sub: string;
   area: string;
   sort: string;
-  onChange: (patch: Partial<{ category: string; sub: string; area: string; sort: string }>) => void;
+  onChange: (patch: Record<string, string | undefined>) => void;
   onClear: () => void;
 }) {
   const scrollToMap = () =>
@@ -636,7 +657,6 @@ function EmptyState() {
       </p>
       <Link
         to="/shops"
-        search={{ q: "", category: "", sub: "", area: "", sort: "featured" }}
         className="mt-6 inline-flex items-center gap-2 rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
       >
         Reset filters
@@ -649,8 +669,9 @@ function EmptyState() {
 function ShopRow({ shop: s }: { shop: Shop }) {
   return (
     <article className="group flex flex-col overflow-hidden rounded-sm border border-border bg-card transition hover:border-primary/40 hover:shadow-[0_18px_40px_-20px_oklch(0.22_0.03_45_/_0.35)] sm:flex-row">
-      <a
-        href={`/shops/${s.slug}`}
+      <Link
+        to="/shops/$slug"
+        params={{ slug: s.slug }}
         className="relative block overflow-hidden sm:w-64 sm:flex-shrink-0"
       >
         <img
@@ -667,16 +688,17 @@ function ShopRow({ shop: s }: { shop: Shop }) {
             Featured
           </span>
         )}
-      </a>
+      </Link>
       <div className="flex flex-1 flex-col gap-3 p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <a
-              href={`/shops/${s.slug}`}
+            <Link
+              to="/shops/$slug"
+              params={{ slug: s.slug }}
               className="font-display text-lg font-semibold text-foreground transition hover:text-primary"
             >
               {s.name}
-            </a>
+            </Link>
             <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
               <MapPin className="h-3.5 w-3.5" />
               {s.area}
@@ -701,13 +723,14 @@ function ShopRow({ shop: s }: { shop: Shop }) {
             <Phone className="h-4 w-4" />
             Call
           </a>
-          <a
-            href={`/shops/${s.slug}`}
+          <Link
+            to="/shops/$slug"
+            params={{ slug: s.slug }}
             className="ml-auto inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
           >
             View shop
             <ArrowRight className="h-3.5 w-3.5" />
-          </a>
+          </Link>
         </div>
       </div>
     </article>

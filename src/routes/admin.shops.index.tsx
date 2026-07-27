@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useShops } from "@/hooks/use-shops";
 import { deleteShop } from "@/lib/shops-api";
+import { AdminNav } from "@/components/admin/AdminNav";
 
 export const Route = createFileRoute("/admin/shops/")({
   head: () => ({
@@ -76,7 +77,7 @@ function AdminShopsList() {
             <h1 className="text-xl font-semibold">Businesses</h1>
           </div>
           <div className="flex items-center gap-2">
-            <Link to="/shops" className="text-sm text-muted-foreground hover:text-foreground">
+            <Link to="/shops" search={{}} className="text-sm text-muted-foreground hover:text-foreground">
               View site
             </Link>
             <Button asChild size="sm">
@@ -85,6 +86,9 @@ function AdminShopsList() {
               </Link>
             </Button>
           </div>
+        </div>
+        <div className="mx-auto max-w-6xl px-4">
+          <AdminNav active="shops" />
         </div>
       </header>
 

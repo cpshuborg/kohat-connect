@@ -409,7 +409,7 @@ function ShopDetailPage() {
         </div>
       </section>
 
-      <FeaturedShops className="mt-4" />
+      <FeaturedShops className="mt-4" showPromo />
 
       {/* Floating WhatsApp */}
       <a

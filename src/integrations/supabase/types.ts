@@ -136,6 +136,42 @@ export type Database = {
         }
         Relationships: []
       }
+      listing_requests: {
+        Row: {
+          id: string
+          shop_name: string
+          whatsapp: string
+          phone: string
+          address: string
+          image_url: string
+          status: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          shop_name: string
+          whatsapp?: string
+          phone?: string
+          address?: string
+          image_url?: string
+          status?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          shop_name?: string
+          whatsapp?: string
+          phone?: string
+          address?: string
+          image_url?: string
+          status?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

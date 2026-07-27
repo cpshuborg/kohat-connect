@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   Search,
@@ -36,6 +36,8 @@ import {
 } from "@/data/home";
 import { mainCategories } from "@/data/categories";
 import { FeaturedShops } from "@/components/FeaturedShops";
+import { ListBusinessPromo } from "@/components/ListBusinessPromo";
+import { KohatLogo } from "@/components/KohatLogo";
 import { useShops } from "@/hooks/use-shops";
 
 const HOME_TITLE = "Kohat Business Directory — Local Shops, Restaurants & Services";
@@ -97,10 +99,7 @@ const categoryIcons: Record<string, typeof UtensilsCrossed> = {
 function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <TopBar />
       <Hero />
-      <SearchStrip />
-      <CategoryChips />
       <Featured />
       <RecentlyAdded />
       <HowItWorks />
@@ -112,16 +111,9 @@ function Home() {
 
 function TopBar() {
   return (
-    <header className="absolute top-0 left-0 right-0 z-30">
+    <header className="relative z-30">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-        <Link to="/" className="flex items-baseline gap-2">
-          <span className="font-display text-2xl font-semibold tracking-tight text-primary-foreground drop-shadow-sm">
-            Kohat<span className="text-accent">Business</span>
-          </span>
-          <span className="font-urdu text-lg text-primary-foreground/85">
-            کوہاٹ
-          </span>
-        </Link>
+        <KohatLogo linkToHome />
         <nav className="flex items-center gap-2">
           <Link
             to="/about"
@@ -131,7 +123,7 @@ function TopBar() {
           </Link>
           <Link
             to="/contact"
-            className="rounded-sm px-3 py-2 text-sm text-primary-foreground transition hover:text-accent"
+            className="hidden rounded-sm px-3 py-2 text-sm text-primary-foreground transition hover:text-accent sm:inline-flex"
           >
             Contact
           </Link>
@@ -147,13 +139,14 @@ function TopBar() {
           <a
             href={`mailto:${socials.contactEmail}`}
             aria-label="Contact"
-            className="rounded-sm border border-white/25 bg-white/10 p-2 text-primary-foreground backdrop-blur transition hover:bg-white/20"
+            className="hidden rounded-sm border border-white/25 bg-white/10 p-2 text-primary-foreground backdrop-blur transition hover:bg-white/20 sm:inline-flex"
           >
             <Mail className="h-4 w-4" />
           </a>
           <Link
-            to="/"
-            className="ml-2 hidden items-center gap-2 rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition hover:bg-primary/90 sm:inline-flex"
+            to="/shops"
+            search={{}}
+            className="ml-1 inline-flex items-center gap-2 rounded-sm bg-primary px-3 py-2 text-sm font-medium text-primary-foreground shadow-sm transition hover:bg-primary/90 sm:ml-2 sm:px-4"
           >
             Enter Directory
             <ArrowRight className="h-4 w-4" />
@@ -165,10 +158,13 @@ function TopBar() {
 }
 
 function Hero() {
+  const [q, setQ] = useState("");
+  const navigate = useNavigate();
+
   return (
-    <section className="relative overflow-hidden">
-      <div className="grid min-h-[92vh] grid-cols-1 lg:grid-cols-12">
-        {/* Main image */}
+    <section className="relative isolate min-h-[100svh] overflow-hidden">
+      {/* Full-bleed image plane */}
+      <div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-12">
         <div className="relative col-span-1 lg:col-span-8">
           <img
             src={heroImages.main}
@@ -177,45 +173,17 @@ function Hero() {
             height={1104}
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.22_0.03_45_/_0.75)] via-[oklch(0.22_0.03_45_/_0.25)] to-[oklch(0.22_0.03_45_/_0.55)]" />
-
-          {/* Copy */}
-          <div className="absolute inset-x-0 bottom-0 px-6 pb-24 sm:pb-28 lg:px-16 lg:pb-32">
-            <div className="max-w-3xl">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-sm border border-white/25 bg-white/10 px-3 py-1 text-xs uppercase tracking-[0.18em] text-primary-foreground backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                A city directory · Kohat, KPK
-              </div>
-              <h1 className="font-display text-4xl font-semibold leading-[1.05] text-primary-foreground sm:text-6xl lg:text-7xl">
-                {tagline.english}
-              </h1>
-              <p className="font-urdu mt-4 text-2xl text-primary-foreground/90 sm:text-3xl" dir="rtl">
-                {tagline.urdu}
-              </p>
-              <p className="mt-6 max-w-xl text-base text-primary-foreground/85">
-                {tagline.sub}
-              </p>
-            </div>
-          </div>
         </div>
-
-        {/* Side stack */}
-        <div className="hidden grid-rows-2 lg:col-span-4 lg:grid">
+        <div className="hidden lg:col-span-4 lg:grid lg:grid-rows-2">
           <div className="relative overflow-hidden border-l border-b border-white/10">
             <img
               src={heroImages.side1}
               alt="Biryani stall"
               width={900}
               height={1100}
-              className="h-full w-full object-cover transition duration-700 hover:scale-105"
+              className="h-full w-full object-cover"
               loading="lazy"
             />
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-5">
-              <span className="text-xs uppercase tracking-[0.2em] text-accent">
-                Featured
-              </span>
-              <p className="font-display text-xl text-white">Biryani &amp; Karahi</p>
-            </div>
           </div>
           <div className="relative overflow-hidden border-l border-white/10">
             <img
@@ -223,97 +191,114 @@ function Hero() {
               alt="Bike shop"
               width={900}
               height={700}
-              className="h-full w-full object-cover transition duration-700 hover:scale-105"
+              className="h-full w-full object-cover"
               loading="lazy"
             />
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-5">
-              <span className="text-xs uppercase tracking-[0.2em] text-accent">
-                Featured
-              </span>
-              <p className="font-display text-xl text-white">Bikes &amp; Motors</p>
-            </div>
           </div>
         </div>
       </div>
-    </section>
-  );
-}
 
-function SearchStrip() {
-  const [q, setQ] = useState("");
-  return (
-    <section className="relative z-20 -mt-10 px-6">
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          // Routes to /shops later
-          window.location.href = `/shops?q=${encodeURIComponent(q)}`;
-        }}
-        className="mx-auto flex max-w-4xl items-center gap-2 rounded-sm border border-border bg-card p-2 shadow-[0_20px_60px_-20px_oklch(0.22_0.03_45_/_0.35)]"
-      >
-        <div className="flex flex-1 items-center gap-3 px-3">
-          <Search className="h-5 w-5 text-muted-foreground" />
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            type="search"
-            placeholder="Search shops, restaurants, areas…"
-            className="w-full bg-transparent py-3 text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
-          />
-        </div>
-        <button
-          type="submit"
-          className="inline-flex items-center gap-2 rounded-sm bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
-        >
-          Search
-          <ArrowRight className="h-4 w-4" />
-        </button>
-      </form>
-    </section>
-  );
-}
+      <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.18_0.03_45_/_0.55)] via-[oklch(0.18_0.03_45_/_0.45)] to-[oklch(0.18_0.03_45_/_0.78)]" />
 
-function CategoryChips() {
-  return (
-    <section className="px-6 py-14 sm:py-16">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-6 flex items-end justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-              Browse by category
+      <div className="relative z-10 flex min-h-[100svh] flex-col">
+        <TopBar />
+
+        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-end gap-6 px-6 pb-8 pt-8 sm:gap-8 sm:pb-12 lg:px-10">
+          {/* 1. Headline */}
+          <div className="max-w-3xl animate-in fade-in slide-in-from-bottom-3 duration-700">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-sm border border-white/25 bg-white/10 px-3 py-1 text-xs uppercase tracking-[0.18em] text-primary-foreground backdrop-blur-md">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+              A city directory · Kohat, KPK
+            </div>
+            <h1 className="font-display text-4xl font-semibold leading-[1.05] text-primary-foreground sm:text-6xl lg:text-7xl">
+              {tagline.english}
+            </h1>
+            <p className="font-urdu mt-4 text-2xl text-primary-foreground/90 sm:text-3xl" dir="rtl">
+              {tagline.urdu}
             </p>
-            <h2 className="mt-1 font-display text-2xl font-semibold sm:text-3xl">
-              What are you looking for today?
-            </h2>
+            <p className="mt-5 max-w-xl text-base text-primary-foreground/85 sm:text-lg">
+              {tagline.sub}
+            </p>
           </div>
-          <Link
-            to="/"
-            className="hidden text-sm font-medium text-primary underline-offset-4 hover:underline sm:inline"
-          >
-            View all categories →
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7">
-          {mainCategories.map((c) => {
-            const Icon = categoryIcons[c.key] ?? ShoppingBasket;
-            return (
-              <a
-                key={c.key}
-                href={`/shops?category=${c.key}`}
-                className="group flex flex-col items-start gap-3 rounded-sm border border-border bg-card p-4 transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-sm"
+
+          {/* 2. Search + list CTA in parallel */}
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-5 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-100 fill-mode-both">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                void navigate({
+                  to: "/shops",
+                  search: q.trim() ? { q: q.trim() } : {},
+                });
+              }}
+              className="flex w-full max-w-4xl items-center gap-2 rounded-sm border border-white/25 bg-white/15 p-2 shadow-[0_20px_60px_-24px_oklch(0_0_0_/_0.55)] backdrop-blur-xl"
+            >
+              <div className="flex flex-1 items-center gap-3 px-3">
+                <Search className="h-5 w-5 shrink-0 text-primary-foreground/70" />
+                <input
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  type="search"
+                  placeholder="Search shops, restaurants, areas…"
+                  className="w-full bg-transparent py-3 text-base text-primary-foreground placeholder:text-primary-foreground/55 focus:outline-none"
+                />
+              </div>
+              <button
+                type="submit"
+                className="inline-flex items-center gap-2 rounded-sm bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 sm:px-5"
               >
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-sm bg-secondary text-primary transition group-hover:bg-primary group-hover:text-primary-foreground">
-                  <Icon className="h-5 w-5" strokeWidth={1.5} />
-                </span>
-                <div>
-                  <p className="font-display text-base font-medium">{c.label}</p>
-                  <p className="font-urdu text-sm text-muted-foreground" dir="rtl">
-                    {c.urdu}
-                  </p>
-                </div>
-              </a>
-            );
-          })}
+                Search
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </form>
+            <ListBusinessPromo variant="hero" className="w-full shrink-0 lg:w-auto lg:max-w-sm" />
+          </div>
+
+          {/* 3. Browse categories — glass panel */}
+          <div className="rounded-sm border border-white/20 bg-white/10 p-4 shadow-[0_24px_80px_-30px_oklch(0_0_0_/_0.6)] backdrop-blur-xl sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-200 fill-mode-both">
+            <div className="mb-4 flex items-end justify-between gap-4 sm:mb-5">
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-primary-foreground/65">
+                  Browse by category
+                </p>
+                <h2 className="mt-1 font-display text-xl font-semibold text-primary-foreground sm:text-2xl">
+                  What are you looking for today?
+                </h2>
+              </div>
+              <Link
+                to="/shops"
+                search={{}}
+                className="shrink-0 text-sm font-medium text-accent underline-offset-4 transition hover:underline"
+              >
+                View all →
+              </Link>
+            </div>
+            <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-3 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7">
+              {mainCategories.map((c) => {
+                const Icon = categoryIcons[c.key] ?? ShoppingBasket;
+                return (
+                  <Link
+                    key={c.key}
+                    to="/shops"
+                    search={{ category: c.key }}
+                    className="group flex w-[9.5rem] shrink-0 flex-col items-start gap-2.5 rounded-sm border border-white/15 bg-white/10 p-3 transition hover:-translate-y-0.5 hover:border-white/35 hover:bg-white/20 sm:w-auto sm:gap-3 sm:p-4"
+                  >
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-sm bg-white/15 text-accent transition group-hover:bg-primary group-hover:text-primary-foreground sm:h-10 sm:w-10">
+                      <Icon className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={1.5} />
+                    </span>
+                    <div>
+                      <p className="font-display text-sm font-medium text-primary-foreground sm:text-base">
+                        {c.label}
+                      </p>
+                      <p className="font-urdu text-xs text-primary-foreground/65 sm:text-sm" dir="rtl">
+                        {c.urdu}
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -343,7 +328,6 @@ function Featured() {
       description=""
       items={items}
       showLink
-      linkHref="/shops"
       linkLabel="See all businesses →"
     />
   );
@@ -379,19 +363,21 @@ function RecentlyAdded() {
               Recently added businesses
             </h2>
           </div>
-          <a
-            href="/shops?sort=newest"
+          <Link
+            to="/shops"
+            search={{ sort: "newest" }}
             className="hidden text-sm font-medium text-primary underline-offset-4 hover:underline sm:inline"
           >
             Browse newest →
-          </a>
+          </Link>
         </div>
 
         <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
           {recent.map((s) => (
-            <a
+            <Link
               key={s.slug}
-              href={`/shops/${s.slug}`}
+              to="/shops/$slug"
+              params={{ slug: s.slug }}
               className="group flex flex-col overflow-hidden rounded-sm border border-border bg-card transition hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_18px_40px_-20px_oklch(0.22_0.03_45_/_0.35)]"
             >
               <div className="relative overflow-hidden">
@@ -419,7 +405,7 @@ function RecentlyAdded() {
                   {s.area}
                 </p>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -517,22 +503,7 @@ function AboutStrip() {
           </p>
         </div>
         <div className="lg:col-span-5">
-          <div className="rounded-sm border border-border bg-card p-6">
-            <p className="font-urdu text-2xl text-foreground" dir="rtl">
-              کوہاٹ کی ہر دکان، ایک کلک پر
-            </p>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Own a shop in Kohat? List it free — buyers reach you directly via
-              WhatsApp or call.
-            </p>
-            <a
-              href={`mailto:${socials.contactEmail}`}
-              className="mt-5 inline-flex items-center gap-2 rounded-sm bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
-            >
-              List your business
-              <ArrowRight className="h-4 w-4" />
-            </a>
-          </div>
+          <ListBusinessPromo />
         </div>
       </div>
     </section>
@@ -544,9 +515,7 @@ function Footer() {
     <footer className="border-t border-border bg-[oklch(0.22_0.03_45)] text-primary-foreground">
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 py-14 sm:grid-cols-3">
         <div>
-          <p className="font-display text-2xl font-semibold">
-            Kohat<span className="text-accent">Business</span>
-          </p>
+          <KohatLogo imgClassName="h-12 sm:h-14" />
           <p className="mt-3 max-w-xs text-sm text-primary-foreground/70">
             A community directory for every shop, café, stall and business
             across Kohat.
@@ -557,10 +526,22 @@ function Footer() {
             Explore
           </p>
           <ul className="space-y-2 text-primary-foreground/80">
-            <li><a href="/shops" className="hover:text-accent">All Businesses</a></li>
-            <li><a href="/shops?category=food-drinks" className="hover:text-accent">Food &amp; Drinks</a></li>
-            <li><a href="/about" className="hover:text-accent">About Us</a></li>
-            <li><a href="/contact" className="hover:text-accent">Contact Us</a></li>
+            <li>
+              <Link to="/shops" search={{}} className="hover:text-accent">
+                All Businesses
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/shops"
+                search={{ category: "food-drinks" }}
+                className="hover:text-accent"
+              >
+                Food &amp; Drinks
+              </Link>
+            </li>
+            <li><Link to="/about" className="hover:text-accent">About Us</Link></li>
+            <li><Link to="/contact" className="hover:text-accent">Contact Us</Link></li>
           </ul>
         </div>
         <div className="text-sm">

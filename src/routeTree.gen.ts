@@ -12,11 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ListBusinessRouteImport } from './routes/list-business'
 import { Route as ShopsIndexRouteImport } from './routes/shops.index'
 import { Route as ShopsSlugRouteImport } from './routes/shops.$slug'
 import { Route as AdminShopsIndexRouteImport } from './routes/admin.shops.index'
 import { Route as AdminShopsNewRouteImport } from './routes/admin.shops.new'
 import { Route as AdminShopsSlugEditRouteImport } from './routes/admin.shops.$slug.edit'
+import { Route as AdminRequestsIndexRouteImport } from './routes/admin.requests.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -31,6 +33,11 @@ const AboutRoute = AboutRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListBusinessRoute = ListBusinessRouteImport.update({
+  id: '/list-business',
+  path: '/list-business',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShopsIndexRoute = ShopsIndexRouteImport.update({
@@ -58,37 +65,48 @@ const AdminShopsSlugEditRoute = AdminShopsSlugEditRouteImport.update({
   path: '/admin/shops/$slug/edit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRequestsIndexRoute = AdminRequestsIndexRouteImport.update({
+  id: '/admin/requests/',
+  path: '/admin/requests/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/list-business': typeof ListBusinessRoute
   '/shops/$slug': typeof ShopsSlugRoute
   '/shops/': typeof ShopsIndexRoute
   '/admin/shops/new': typeof AdminShopsNewRoute
   '/admin/shops/': typeof AdminShopsIndexRoute
   '/admin/shops/$slug/edit': typeof AdminShopsSlugEditRoute
+  '/admin/requests/': typeof AdminRequestsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/list-business': typeof ListBusinessRoute
   '/shops/$slug': typeof ShopsSlugRoute
   '/shops': typeof ShopsIndexRoute
   '/admin/shops/new': typeof AdminShopsNewRoute
   '/admin/shops': typeof AdminShopsIndexRoute
   '/admin/shops/$slug/edit': typeof AdminShopsSlugEditRoute
+  '/admin/requests': typeof AdminRequestsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/list-business': typeof ListBusinessRoute
   '/shops/$slug': typeof ShopsSlugRoute
   '/shops/': typeof ShopsIndexRoute
   '/admin/shops/new': typeof AdminShopsNewRoute
   '/admin/shops/': typeof AdminShopsIndexRoute
   '/admin/shops/$slug/edit': typeof AdminShopsSlugEditRoute
+  '/admin/requests/': typeof AdminRequestsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -96,42 +114,50 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/list-business'
     | '/shops/$slug'
     | '/shops/'
     | '/admin/shops/new'
     | '/admin/shops/'
     | '/admin/shops/$slug/edit'
+    | '/admin/requests/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/contact'
+    | '/list-business'
     | '/shops/$slug'
     | '/shops'
     | '/admin/shops/new'
     | '/admin/shops'
     | '/admin/shops/$slug/edit'
+    | '/admin/requests'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/contact'
+    | '/list-business'
     | '/shops/$slug'
     | '/shops/'
     | '/admin/shops/new'
     | '/admin/shops/'
     | '/admin/shops/$slug/edit'
+    | '/admin/requests/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  ListBusinessRoute: typeof ListBusinessRoute
   ShopsSlugRoute: typeof ShopsSlugRoute
   ShopsIndexRoute: typeof ShopsIndexRoute
   AdminShopsNewRoute: typeof AdminShopsNewRoute
   AdminShopsIndexRoute: typeof AdminShopsIndexRoute
   AdminShopsSlugEditRoute: typeof AdminShopsSlugEditRoute
+  AdminRequestsIndexRoute: typeof AdminRequestsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -155,6 +181,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/list-business': {
+      id: '/list-business'
+      path: '/list-business'
+      fullPath: '/list-business'
+      preLoaderRoute: typeof ListBusinessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/shops/': {
@@ -192,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminShopsSlugEditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/requests/': {
+      id: '/admin/requests/'
+      path: '/admin/requests'
+      fullPath: '/admin/requests/'
+      preLoaderRoute: typeof AdminRequestsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -199,11 +239,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  ListBusinessRoute: ListBusinessRoute,
   ShopsSlugRoute: ShopsSlugRoute,
   ShopsIndexRoute: ShopsIndexRoute,
   AdminShopsNewRoute: AdminShopsNewRoute,
   AdminShopsIndexRoute: AdminShopsIndexRoute,
   AdminShopsSlugEditRoute: AdminShopsSlugEditRoute,
+  AdminRequestsIndexRoute: AdminRequestsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
