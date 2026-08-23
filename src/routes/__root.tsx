@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { Toaster } from "sonner";
 
 import "../styles.css";
+import { LocationPrompt } from "../components/LocationPrompt";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { DEFAULT_DESCRIPTION, DEFAULT_OG_IMAGE, SITE_NAME } from "../lib/site-seo";
 
@@ -107,6 +108,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <Toaster />
+      <LocationPrompt />
       <Outlet />
     </QueryClientProvider>
   );

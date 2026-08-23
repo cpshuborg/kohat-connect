@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
+import { toast } from "sonner";
 import {
   Search,
   Phone,
@@ -23,6 +24,8 @@ import { ShopCard, Pagination, FeaturedShops } from "@/components/FeaturedShops"
 import { ListBusinessPromo } from "@/components/ListBusinessPromo";
 import { KohatLogo } from "@/components/KohatLogo";
 import { pageHead, webPageJsonLd } from "@/lib/site-seo";
+import { useUserLocation } from "@/hooks/use-user-location";
+import { sortShopsByDistance } from "@/lib/shop-distance";
 
 // Optional-only schema: do NOT use .default() here - that rewrites the URL
 // (307 on Lovable SSR / static hosts) and is a common cause of /shops 404s.
@@ -32,6 +35,7 @@ const searchSchema = z.object({
   sub: z.string().optional().catch(undefined),
   area: z.string().optional().catch(undefined),
   sort: z.string().optional().catch(undefined),
+  near: z.string().optional().catch(undefined),
 });
 
 type ShopSearch = {
@@ -40,6 +44,7 @@ type ShopSearch = {
   sub: string;
   area: string;
   sort: string;
+  near: string;
 };
 
 function normalizeSearch(search: z.infer<typeof searchSchema>): ShopSearch {
@@ -49,6 +54,7 @@ function normalizeSearch(search: z.infer<typeof searchSchema>): ShopSearch {
     sub: search.sub ?? "",
     area: search.area ?? "",
     sort: search.sort ?? "featured",
+    near: search.near ?? "",
   };
 }
 
@@ -69,19 +75,28 @@ export const Route = createFileRoute("/shops/")({
 
 function ShopsPage() {
   const raw = Route.useSearch();
-  const { q, category, sub, area, sort } = normalizeSearch(raw);
+  const { q, category, sub, area, sort, near } = normalizeSearch(raw);
   const navigate = Route.useNavigate();
   const [qInput, setQInput] = useState(q);
+  const [searchMode, setSearchMode] = useState<"all" | "near">(near === "1" ? "near" : "all");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [view, setView] = useState<"grid" | "list">("grid");
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 6;
   const { shops } = useShops();
+  const { location, requestLocation, loading: locationLoading } = useUserLocation();
 
   // Keep the search box in sync with the URL (chips, back/forward, reset).
   useEffect(() => {
     setQInput(q);
-  }, [q]);
+    setSearchMode(near === "1" ? "near" : "all");
+  }, [q, near]);
+
+  useEffect(() => {
+    if (near === "1" && !location) {
+      void requestLocation().catch(() => {});
+    }
+  }, [near, location, requestLocation]);
 
   const applySearch = (patch: Record<string, string | undefined>) => {
     navigate({
@@ -93,12 +108,25 @@ function ShopsPage() {
             next[key] = undefined;
           } else if (key === "sort" && value === "featured") {
             next[key] = undefined;
+          } else if (key === "near" && value !== "1") {
+            next[key] = undefined;
           }
         }
         return next;
       },
     });
   };
+
+  async function enableNearYou() {
+    try {
+      await requestLocation();
+      applySearch({ near: "1" });
+      setSearchMode("near");
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Allow location to see shops near you.";
+      toast.error(msg);
+    }
+  }
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -112,7 +140,9 @@ function ShopsPage() {
       }
       return true;
     });
-    if (sort === "name") {
+    if (near === "1" && location) {
+      list = sortShopsByDistance(list, location.lat, location.lng);
+    } else if (sort === "name") {
       list = [...list].sort((a, b) => a.name.localeCompare(b.name));
     } else if (sort === "area") {
       list = [...list].sort((a, b) => a.area.localeCompare(b.area));
@@ -122,7 +152,7 @@ function ShopsPage() {
       );
     }
     return list;
-  }, [q, category, sub, area, sort, shops]);
+  }, [q, category, sub, area, sort, near, location, shops]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -131,15 +161,20 @@ function ShopsPage() {
 
   useEffect(() => {
     setPage(1);
-  }, [q, category, sub, area, sort]);
+  }, [q, category, sub, area, sort, near]);
 
   const activeCount =
-    (q ? 1 : 0) + (category ? 1 : 0) + (sub ? 1 : 0) + (area ? 1 : 0) + (sort !== "featured" ? 1 : 0);
+    (q ? 1 : 0) +
+    (category ? 1 : 0) +
+    (sub ? 1 : 0) +
+    (area ? 1 : 0) +
+    (sort !== "featured" ? 1 : 0) +
+    (near === "1" ? 1 : 0);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <TopBar />
-      <PageHeader total={shops.length} showing={filtered.length} />
+      <PageHeader total={shops.length} showing={filtered.length} near={near} />
 
       <section className="mx-auto max-w-7xl px-6 pb-24 pt-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
@@ -157,26 +192,63 @@ function ShopsPage() {
 
           {/* Results */}
           <div className="lg:col-span-9">
-            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
-                <button
-                  onClick={() => setFiltersOpen(true)}
-                  className="inline-flex items-center gap-2 rounded-sm border border-border bg-card px-3 py-2 text-sm font-medium lg:hidden"
-                >
-                  <SlidersHorizontal className="h-4 w-4" />
-                  Filters
-                  {activeCount > 0 && (
-                    <span className="rounded-sm bg-primary px-1.5 text-xs text-primary-foreground">
-                      {activeCount}
-                    </span>
-                  )}
-                </button>
+            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex min-w-0 flex-1 flex-col gap-3">
+                {/* Row 1: filters + mode + near you */}
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={() => setFiltersOpen(true)}
+                    className="inline-flex items-center gap-2 rounded-sm border border-border bg-card px-3 py-2 text-sm font-medium lg:hidden"
+                  >
+                    <SlidersHorizontal className="h-4 w-4" />
+                    Filters
+                    {activeCount > 0 && (
+                      <span className="rounded-sm bg-primary px-1.5 text-xs text-primary-foreground">
+                        {activeCount}
+                      </span>
+                    )}
+                  </button>
+                  <select
+                    value={searchMode}
+                    onChange={(e) => {
+                      const mode = e.target.value as "all" | "near";
+                      setSearchMode(mode);
+                      if (mode === "near") {
+                        void enableNearYou();
+                      } else {
+                        applySearch({ near: undefined });
+                      }
+                    }}
+                    className="hidden h-9 shrink-0 rounded-sm border border-border bg-card px-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 sm:block"
+                  >
+                    <option value="all">All shops</option>
+                    <option value="near">Shops near you</option>
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => void enableNearYou()}
+                    disabled={locationLoading}
+                    className={`inline-flex shrink-0 items-center gap-1.5 rounded-sm border px-3 py-2 text-sm font-medium transition ${
+                      near === "1"
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border bg-card text-foreground hover:border-primary/40 hover:text-primary"
+                    }`}
+                  >
+                    <Navigation className="h-4 w-4" />
+                    Shops near You
+                  </button>
+                </div>
+
+                {/* Row 2: search bar */}
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    applySearch({ q: qInput.trim() || undefined });
+                    applySearch({
+                      q: qInput.trim() || undefined,
+                      near: searchMode === "near" ? "1" : undefined,
+                    });
                   }}
-                  className="flex min-w-0 flex-1 items-center gap-2 rounded-sm border border-border bg-card p-1.5 sm:max-w-md"
+                  className="flex w-full min-w-0 items-center gap-2 rounded-sm border border-border bg-card p-1.5 sm:max-w-2xl"
                 >
                   <div className="flex min-w-0 flex-1 items-center gap-2 px-2">
                     <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -195,12 +267,17 @@ function ShopsPage() {
                     Search
                   </button>
                 </form>
+
                 <ActiveChips
                   q={q}
                   category={category}
                   sub={sub}
                   area={area}
-                  onClear={(key) => applySearch({ [key]: undefined })}
+                  near={near}
+                  onClear={(key) => {
+                    applySearch({ [key]: undefined });
+                    if (key === "near") setSearchMode("all");
+                  }}
                 />
               </div>
               <div className="flex shrink-0 items-center gap-3">
@@ -234,18 +311,6 @@ function ShopsPage() {
                     List
                   </button>
                 </div>
-                <label className="hidden items-center gap-2 text-sm text-muted-foreground sm:flex">
-                  Sort
-                  <select
-                    value={sort}
-                    onChange={(e) => applySearch({ sort: e.target.value })}
-                    className="rounded-sm border border-border bg-card px-2 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  >
-                    <option value="featured">Featured first</option>
-                    <option value="name">Name A–Z</option>
-                    <option value="area">Area</option>
-                  </select>
-                </label>
               </div>
             </div>
 
@@ -370,9 +435,11 @@ function TopBar() {
 function PageHeader({
   total,
   showing,
+  near,
 }: {
   total: number;
   showing: number;
+  near: string;
 }) {
   return (
     <section className="border-b border-border bg-secondary/40 px-6 py-12">
@@ -387,6 +454,7 @@ function PageHeader({
           <p className="mt-2 text-sm text-muted-foreground">
             Showing <span className="font-medium text-foreground">{showing}</span> of{" "}
             {total} listings
+            {near === "1" ? " · sorted by distance from you" : ""}
           </p>
         </div>
         <div className="lg:col-span-5">
@@ -433,6 +501,21 @@ function Filters({
           <MapPin className="h-4 w-4" />
           View map
         </button>
+      </div>
+
+      <div>
+        <p className="mb-3 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+          Sort
+        </p>
+        <select
+          value={sort}
+          onChange={(e) => onChange({ sort: e.target.value })}
+          className="w-full rounded-sm border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+        >
+          <option value="featured">Featured first</option>
+          <option value="name">Name A–Z</option>
+          <option value="area">Area</option>
+        </select>
       </div>
 
       <div>
@@ -532,21 +615,6 @@ function Filters({
         </p>
       )}
 
-      <div className="sm:hidden">
-        <p className="mb-3 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-          Sort
-        </p>
-        <select
-          value={sort}
-          onChange={(e) => onChange({ sort: e.target.value })}
-          className="w-full rounded-sm border border-border bg-card px-3 py-2 text-sm"
-        >
-          <option value="featured">Featured first</option>
-          <option value="name">Name A–Z</option>
-          <option value="area">Area</option>
-        </select>
-      </div>
-
       <button
         onClick={onClear}
         className="w-full rounded-sm border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition hover:border-primary/40 hover:text-primary"
@@ -597,16 +665,19 @@ function ActiveChips({
   category,
   sub,
   area,
+  near,
   onClear,
 }: {
   q: string;
   category: string;
   sub: string;
   area: string;
-  onClear: (key: "q" | "category" | "sub" | "area") => void;
+  near: string;
+  onClear: (key: "q" | "category" | "sub" | "area" | "near") => void;
 }) {
-  const items: Array<{ key: "q" | "category" | "sub" | "area"; label: string }> = [];
+  const items: Array<{ key: "q" | "category" | "sub" | "area" | "near"; label: string }> = [];
   if (q) items.push({ key: "q", label: `“${q}”` });
+  if (near === "1") items.push({ key: "near", label: "Near you" });
   if (category) {
     const m = mainCategories.find((x) => x.key === category);
     items.push({ key: "category", label: m?.label ?? category });
