@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useShops } from "@/hooks/use-shops";
 import { deleteShop } from "@/lib/shops-api";
+import { shops as sampleShops } from "@/data/shops";
 import { AdminNav } from "@/components/admin/AdminNav";
 
 export const Route = createFileRoute("/admin/shops/")({
@@ -37,6 +38,7 @@ function AdminShopsList() {
   const qc = useQueryClient();
 
   async function handleDelete(slug: string, name: string) {
+    const isSampleOnly = sampleShops.some((s) => s.slug === slug);
     if (usingFallback) {
       toast.error("Can't delete sample data. Create a shop first.");
       return;
@@ -49,8 +51,12 @@ function AdminShopsList() {
       await qc.invalidateQueries({ queryKey: ["shop", slug] });
       toast.success("Shop deleted", { id: `del-${slug}` });
     } catch (e) {
-      const msg = e instanceof Error ? e.message : "Failed to delete shop";
-      toast.error(msg, { id: `del-${slug}` });
+      if (isSampleOnly) {
+        toast.error("Built-in sample shops stay on the site for now.", { id: `del-${slug}` });
+      } else {
+        const msg = e instanceof Error ? e.message : "Failed to delete shop";
+        toast.error(msg, { id: `del-${slug}` });
+      }
     } finally {
       setDeletingSlug(null);
     }

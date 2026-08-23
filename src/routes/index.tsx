@@ -144,66 +144,48 @@ function Hero() {
 
   return (
     <section className="relative isolate min-h-[100svh] overflow-hidden">
-      {/* Full-bleed image plane */}
-      <div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-12">
-        <div className="relative col-span-1 lg:col-span-8">
-          <img
-            src={heroImages.main}
-            alt="Kohat bazaar at golden hour"
-            width={1600}
-            height={1104}
-            className="h-full w-full object-cover"
-          />
-        </div>
-        <div className="hidden lg:col-span-4 lg:grid lg:grid-rows-2">
-          <div className="relative overflow-hidden border-l border-b border-white/10">
-            <img
-              src={heroImages.side1}
-              alt="Biryani stall"
-              width={900}
-              height={1100}
-              className="h-full w-full object-cover"
-              loading="lazy"
-            />
-          </div>
-          <div className="relative overflow-hidden border-l border-white/10">
-            <img
-              src={heroImages.side2}
-              alt="Bike shop"
-              width={900}
-              height={700}
-              className="h-full w-full object-cover"
-              loading="lazy"
-            />
-          </div>
-        </div>
+      {/* Full-bleed background */}
+      <div className="absolute inset-0">
+        <img
+          src={heroImages.main}
+          alt="Kohat city center"
+          width={1920}
+          height={1080}
+          className="h-full w-full object-cover"
+        />
       </div>
 
-      <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.18_0.03_45_/_0.55)] via-[oklch(0.18_0.03_45_/_0.45)] to-[oklch(0.18_0.03_45_/_0.78)]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/10 to-black/40" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
 
       <div className="relative z-10 flex min-h-[100svh] flex-col">
         <TopBar />
 
-        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-end gap-6 px-6 pb-8 pt-8 sm:gap-8 sm:pb-12 lg:px-10">
+        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col items-center justify-end gap-6 px-6 pb-8 pt-8 text-center sm:gap-8 sm:pb-12 lg:px-10">
           {/* 1. Headline */}
-          <div className="max-w-3xl animate-in fade-in slide-in-from-bottom-3 duration-700">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-sm border border-white/25 bg-white/10 px-3 py-1 text-xs uppercase tracking-[0.18em] text-primary-foreground backdrop-blur-md">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-              A city directory · Kohat, KPK
+          <div className="w-full max-w-3xl animate-in fade-in slide-in-from-bottom-3 duration-700">
+            <div className="rounded-sm border border-white/20 bg-black/75 px-6 py-8 shadow-[0_24px_80px_-20px_rgba(0,0,0,0.7)] sm:px-8 sm:py-10">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-sm border border-white/25 bg-white/10 px-3 py-1 text-xs uppercase tracking-[0.18em] text-white">
+                <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                My City Center Online | Kohat - KPK - Pakistan
+              </div>
+              <h1 className="font-display text-4xl font-semibold leading-[1.05] text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.55)] sm:text-6xl lg:text-7xl">
+                {tagline.english}
+              </h1>
+              <p
+                className="font-urdu mt-4 text-2xl text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] sm:text-3xl"
+                dir="rtl"
+              >
+                {tagline.urdu}
+              </p>
+              <p className="mx-auto mt-5 max-w-xl text-base text-white/95 drop-shadow-[0_1px_8px_rgba(0,0,0,0.45)] sm:text-lg">
+                {tagline.sub}
+              </p>
             </div>
-            <h1 className="font-display text-4xl font-semibold leading-[1.05] text-primary-foreground sm:text-6xl lg:text-7xl">
-              {tagline.english}
-            </h1>
-            <p className="font-urdu mt-4 text-2xl text-primary-foreground/90 sm:text-3xl" dir="rtl">
-              {tagline.urdu}
-            </p>
-            <p className="mt-5 max-w-xl text-base text-primary-foreground/85 sm:text-lg">
-              {tagline.sub}
-            </p>
           </div>
 
           {/* 2. Search + list CTA in parallel */}
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-5 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-100 fill-mode-both">
+          <div className="flex w-full max-w-4xl flex-col items-center gap-4 lg:flex-row lg:justify-center lg:gap-5 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-100 fill-mode-both">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -212,16 +194,16 @@ function Hero() {
                   search: q.trim() ? { q: q.trim() } : {},
                 });
               }}
-              className="flex w-full max-w-4xl items-center gap-2 rounded-sm border border-white/25 bg-white/15 p-2 shadow-[0_20px_60px_-24px_oklch(0_0_0_/_0.55)] backdrop-blur-xl"
+              className="flex w-full max-w-4xl items-center gap-2 rounded-sm border border-white/20 bg-black/70 p-2 shadow-[0_20px_60px_-24px_rgba(0,0,0,0.7)] backdrop-blur-xl"
             >
               <div className="flex flex-1 items-center gap-3 px-3">
-                <Search className="h-5 w-5 shrink-0 text-primary-foreground/70" />
+                <Search className="h-5 w-5 shrink-0 text-white/70" />
                 <input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   type="search"
                   placeholder="Search shops, restaurants, areas…"
-                  className="w-full bg-transparent py-3 text-base text-primary-foreground placeholder:text-primary-foreground/55 focus:outline-none"
+                  className="w-full bg-transparent py-3 text-base text-white placeholder:text-white/50 focus:outline-none"
                 />
               </div>
               <button
@@ -236,13 +218,13 @@ function Hero() {
           </div>
 
           {/* 3. Browse categories - glass panel */}
-          <div className="rounded-sm border border-white/20 bg-white/10 p-4 shadow-[0_24px_80px_-30px_oklch(0_0_0_/_0.6)] backdrop-blur-xl sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-200 fill-mode-both">
+          <div className="w-full rounded-sm border border-white/20 bg-black/70 p-4 shadow-[0_24px_80px_-30px_rgba(0,0,0,0.75)] backdrop-blur-xl sm:p-6 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-200 fill-mode-both">
             <div className="mb-4 flex items-end justify-between gap-4 sm:mb-5">
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-primary-foreground/65">
+                <p className="text-xs uppercase tracking-[0.2em] text-white/65">
                   Browse by category
                 </p>
-                <h2 className="mt-1 font-display text-xl font-semibold text-primary-foreground sm:text-2xl">
+                <h2 className="mt-1 font-display text-xl font-semibold text-white sm:text-2xl">
                   What are you looking for today?
                 </h2>
               </div>
@@ -268,10 +250,10 @@ function Hero() {
                       <Icon className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={1.5} />
                     </span>
                     <div>
-                      <p className="font-display text-sm font-medium text-primary-foreground sm:text-base">
+                      <p className="font-display text-sm font-medium text-white sm:text-base">
                         {c.label}
                       </p>
-                      <p className="font-urdu text-xs text-primary-foreground/65 sm:text-sm" dir="rtl">
+                      <p className="font-urdu text-xs text-white/70 sm:text-sm" dir="rtl">
                         {c.urdu}
                       </p>
                     </div>

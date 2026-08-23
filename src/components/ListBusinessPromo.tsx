@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 /** Matches the dark frosted panel used in the hero “Browse by category” block */
 export const HERO_GLASS_PANEL =
-  "rounded-sm border border-white/20 bg-[oklch(0.22_0.03_45_/_0.42)] text-primary-foreground shadow-[0_24px_80px_-30px_oklch(0_0_0_/_0.6)] backdrop-blur-xl";
+  "rounded-sm border border-white/20 bg-black/70 text-primary-foreground shadow-[0_24px_80px_-30px_rgba(0,0,0,0.7)] backdrop-blur-xl";
 
 export function ListBusinessPromo({
   variant = "light",

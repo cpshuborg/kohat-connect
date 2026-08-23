@@ -83,7 +83,10 @@ export async function fetchShopsWithFallback(): Promise<{
       : row.shop_coordinates;
     return toShop(row as ShopRow, coord ?? undefined);
   });
-  return { shops: mapped, usingFallback: false };
+  // Keep sample shops visible alongside DB shops (DB wins on slug clash).
+  const dbSlugs = new Set(mapped.map((s) => s.slug));
+  const extras = fakeShops.filter((s) => !dbSlugs.has(s.slug));
+  return { shops: [...mapped, ...extras], usingFallback: false };
 }
 
 export async function fetchShopBySlugWithFallback(slug: string) {

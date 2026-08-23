@@ -8,7 +8,7 @@ export const SITE_NAME = "Kohat Business Directory";
 export const DEFAULT_DESCRIPTION =
   "Discover every business in Kohat - restaurants, cafés, biryani spots, bike shops, salons, tailors, workshops and more. Contact owners directly on WhatsApp or phone.";
 
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/logo.png`;
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/my-city-center-logo.png`;
 
 export function siteUrl(path = "/") {
   if (!path || path === "/") return `${SITE_URL}/`;

@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
-const LOGO_SRC = "/logo.png";
+const LOGO_SRC = "/my-city-center-logo.png";
 
 export function KohatLogo({
   className,
@@ -16,7 +16,7 @@ export function KohatLogo({
     <span className={cn("inline-flex items-center", className)}>
       <img
         src={LOGO_SRC}
-        alt="Kohat Business"
+        alt="My City Center"
         width={220}
         height={64}
         className={cn("h-12 w-auto object-contain sm:h-14", imgClassName)}

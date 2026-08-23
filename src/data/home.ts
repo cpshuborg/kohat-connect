@@ -1,5 +1,5 @@
 // Placeholder data for the home page. Later this will be sourced from the admin/Cloud DB.
-import heroBazaar from "@/assets/hero-bazaar.jpg";
+
 import heroBiryani from "@/assets/hero-biryani.jpg";
 import heroBikes from "@/assets/hero-bikes.jpg";
 import shopFurniture from "@/assets/shop-furniture.jpg";
@@ -35,13 +35,11 @@ export type FeaturedShop = {
 };
 
 export const heroImages = {
-  main: heroBazaar,
-  side1: heroBiryani,
-  side2: heroBikes,
+  main: "/bg-full.webp",
 };
 
 export const tagline = {
-  english: "Discover Businesses in Kohat",
+  english: "Kohat Businesses",
   urdu: "کوہاٹ کے کاروبار، ایک جگہ پر",
   sub: "The complete directory of every local business - from biryani stalls to bike mechanics.",
 };
