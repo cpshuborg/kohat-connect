@@ -1,10 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Pencil, Plus, Search, Star, Trash2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,6 +28,35 @@ import { deleteShop } from "@/lib/shops-api";
 import { shops as sampleShops } from "@/data/shops";
 import { AdminNav } from "@/components/admin/AdminNav";
 
+const ADMIN_NAMES = [
+  "aqib",
+  "hamza",
+  "touseef",
+  "hashir",
+  "saud",
+  "zeeshan",
+  "saboor",
+  "afaaq",
+] as const;
+
+const ADMIN_NONE = "__none__";
+const ADMIN_ASSIGNMENTS_KEY = "admin-shop-assignments";
+
+function loadAdminAssignments(): Record<string, string> {
+  try {
+    const raw = localStorage.getItem(ADMIN_ASSIGNMENTS_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw) as Record<string, string>;
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveAdminAssignments(map: Record<string, string>) {
+  localStorage.setItem(ADMIN_ASSIGNMENTS_KEY, JSON.stringify(map));
+}
+
 export const Route = createFileRoute("/admin/shops/")({
   head: () => ({
     meta: [
@@ -34,8 +70,26 @@ export const Route = createFileRoute("/admin/shops/")({
 function AdminShopsList() {
   const [q, setQ] = useState("");
   const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
+  const [adminBySlug, setAdminBySlug] = useState<Record<string, string>>({});
   const { shops, usingFallback, isLoading } = useShops();
   const qc = useQueryClient();
+
+  useEffect(() => {
+    setAdminBySlug(loadAdminAssignments());
+  }, []);
+
+  function setShopAdmin(slug: string, admin: string) {
+    setAdminBySlug((prev) => {
+      const next = { ...prev };
+      if (!admin || admin === ADMIN_NONE) {
+        delete next[slug];
+      } else {
+        next[slug] = admin;
+      }
+      saveAdminAssignments(next);
+      return next;
+    });
+  }
 
   async function handleDelete(slug: string, name: string) {
     const isSampleOnly = sampleShops.some((s) => s.slug === slug);
@@ -117,80 +171,102 @@ function AdminShopsList() {
                 <th className="px-4 py-3">Category</th>
                 <th className="px-4 py-3">Area</th>
                 <th className="px-4 py-3">Featured</th>
+                <th className="px-4 py-3">Admins</th>
                 <th className="px-4 py-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {filtered.map((s) => (
-                <tr key={s.slug} className="border-t">
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <img src={s.image} alt="" className="h-10 w-10 rounded object-cover" />
-                      <div>
-                        <div className="font-medium">{s.name}</div>
-                        <div className="text-xs text-muted-foreground">{s.slug}</div>
+              {filtered.map((s) => {
+                const assigned = adminBySlug[s.slug] ?? "";
+                return (
+                  <tr key={s.slug} className="border-t">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <img src={s.image} alt="" className="h-10 w-10 rounded object-cover" />
+                        <div>
+                          <div className="font-medium">{s.name}</div>
+                          <div className="text-xs text-muted-foreground">{s.slug}</div>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div>{s.categoryLabel}</div>
-                    {s.subcategoryLabel && (
-                      <div className="text-xs text-muted-foreground">{s.subcategoryLabel}</div>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">{s.area}</td>
-                  <td className="px-4 py-3">
-                    {s.featured ? (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
-                        <Star className="h-3 w-3" /> Featured
-                      </span>
-                    ) : (
-                      <span className="text-xs text-muted-foreground">-</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button asChild size="sm" variant="outline">
-                        <Link to="/admin/shops/$slug/edit" params={{ slug: s.slug }}>
-                          <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
-                        </Link>
-                      </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="text-destructive hover:text-destructive"
-                            disabled={deletingSlug === s.slug}
-                          >
-                            <Trash2 className="mr-1 h-3.5 w-3.5" /> Delete
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete {s.name}?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              This permanently removes the shop, its coordinates, and uploaded images. This cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => handleDelete(s.slug, s.name)}
-                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    </td>
+                    <td className="px-4 py-3">
+                      <div>{s.categoryLabel}</div>
+                      {s.subcategoryLabel && (
+                        <div className="text-xs text-muted-foreground">{s.subcategoryLabel}</div>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">{s.area}</td>
+                    <td className="px-4 py-3">
+                      {s.featured ? (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
+                          <Star className="h-3 w-3" /> Featured
+                        </span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">-</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <Select
+                        value={assigned || ADMIN_NONE}
+                        onValueChange={(value) => setShopAdmin(s.slug, value)}
+                      >
+                        <SelectTrigger className="h-8 w-[7.5rem]">
+                          <SelectValue placeholder="-" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value={ADMIN_NONE}>-</SelectItem>
+                          {ADMIN_NAMES.map((name) => (
+                            <SelectItem key={name} value={name}>
+                              {name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button asChild size="sm" variant="outline">
+                          <Link to="/admin/shops/$slug/edit" params={{ slug: s.slug }}>
+                            <Pencil className="mr-1 h-3.5 w-3.5" /> Edit
+                          </Link>
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-destructive hover:text-destructive"
+                              disabled={deletingSlug === s.slug}
                             >
-                              Delete
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                              <Trash2 className="mr-1 h-3.5 w-3.5" /> Delete
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete {s.name}?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This permanently removes the shop, its coordinates, and uploaded images. This cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDelete(s.slug, s.name)}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-4 py-8 text-center text-sm text-muted-foreground">
+                  <td colSpan={6} className="px-4 py-8 text-center text-sm text-muted-foreground">
                     No shops match your search.
                   </td>
                 </tr>
