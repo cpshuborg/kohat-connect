@@ -63,6 +63,7 @@ function baseFromValues(values: ShopFormValues, coverUrl: string, galleryUrls: s
     instagram: values.instagram || null,
     website: values.website || null,
     featured: values.featured,
+    delivery_available: values.deliveryAvailable,
     cover_image: coverUrl,
     gallery: galleryUrls,
     hours: values.hours,

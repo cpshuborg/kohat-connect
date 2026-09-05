@@ -47,6 +47,7 @@ function toShop(row: ShopRow, coord?: Pick<CoordRow, "lat" | "lng">): Shop {
     phone: row.phone ?? "",
     tagline: row.tagline ?? "",
     featured: row.featured,
+    deliveryAvailable: row.delivery_available ?? false,
     email: row.email ?? undefined,
     address: row.address ?? undefined,
     established: row.established ?? undefined,

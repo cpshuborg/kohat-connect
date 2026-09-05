@@ -64,6 +64,7 @@ function EditShopPage() {
     instagram: shop.instagram ?? "",
     website: shop.website ?? "",
     featured: shop.featured ?? false,
+    deliveryAvailable: shop.deliveryAvailable ?? false,
     lat: String(shop.lat),
     lng: String(shop.lng),
     cover: { name: `${shop.slug}-cover.webp`, dataUrl: shop.image },

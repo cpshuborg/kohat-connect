@@ -168,7 +168,7 @@ function ShopDetailPage() {
                 className="aspect-[4/3] w-full object-cover lg:aspect-[16/11]"
               />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
+              <div className="absolute inset-x-0 bottom-0 p-6 pr-28 sm:p-8 sm:pr-36">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded-sm bg-background/95 px-2.5 py-1 text-xs font-medium uppercase tracking-wider text-foreground">
                     {shop.categoryLabel}
@@ -207,6 +207,15 @@ function ShopDetailPage() {
                   </span>
                 </div>
               </div>
+              {shop.deliveryAvailable ? (
+                <span className="absolute bottom-4 right-4 z-10 rounded-sm bg-emerald-500 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-white sm:bottom-6 sm:right-6">
+                  Delivery avail
+                </span>
+              ) : (
+                <span className="absolute bottom-4 right-4 z-10 rounded-sm bg-background/95 px-2.5 py-1 text-xs font-medium uppercase tracking-wider text-muted-foreground sm:bottom-6 sm:right-6">
+                  No delivery
+                </span>
+              )}
             </div>
 
             {/* Social links below the banner image */}

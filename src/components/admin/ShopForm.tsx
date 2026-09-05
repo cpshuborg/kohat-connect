@@ -41,6 +41,7 @@ export type ShopFormValues = {
   instagram: string;
   website: string;
   featured: boolean;
+  deliveryAvailable: boolean;
   lat: string;
   lng: string;
   cover: WebpImage | null;
@@ -78,6 +79,7 @@ export const EMPTY_SHOP: ShopFormValues = {
   instagram: "",
   website: "",
   featured: false,
+  deliveryAvailable: false,
   lat: "",
   lng: "",
   cover: null,
@@ -146,6 +148,7 @@ export function ShopForm({ mode, initial, submitLabel, onSubmit }: Props) {
   const [instagram, setInstagram] = useState(merged.instagram);
   const [website, setWebsite] = useState(merged.website);
   const [featured, setFeatured] = useState(merged.featured);
+  const [deliveryAvailable, setDeliveryAvailable] = useState(merged.deliveryAvailable);
   const [lat, setLat] = useState(merged.lat);
   const [lng, setLng] = useState(merged.lng);
   const [cover, setCover] = useState<WebpImage | null>(merged.cover);
@@ -230,6 +233,7 @@ export function ShopForm({ mode, initial, submitLabel, onSubmit }: Props) {
       instagram,
       website,
       featured,
+      deliveryAvailable,
       lat,
       lng,
       cover,
@@ -336,6 +340,16 @@ export function ShopForm({ mode, initial, submitLabel, onSubmit }: Props) {
             <Checkbox id="featured" checked={featured} onCheckedChange={(v) => setFeatured(v === true)} />
             <Label htmlFor="featured" className="cursor-pointer">
               Mark as featured (appears in Featured Shops sections)
+            </Label>
+          </div>
+          <div className="flex items-center gap-2 md:col-span-2">
+            <Checkbox
+              id="deliveryAvailable"
+              checked={deliveryAvailable}
+              onCheckedChange={(v) => setDeliveryAvailable(v === true)}
+            />
+            <Label htmlFor="deliveryAvailable" className="cursor-pointer">
+              Delivery available
             </Label>
           </div>
         </div>

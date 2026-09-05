@@ -26,6 +26,7 @@ import {
   Compass,
   MousePointerClick,
   PhoneCall,
+  Truck,
 } from "lucide-react";
 import {
   heroImages,
@@ -237,13 +238,20 @@ function Hero() {
               </Link>
             </div>
             <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-3 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7">
-              {mainCategories.map((c) => {
-                const Icon = categoryIcons[c.key] ?? ShoppingBasket;
+              {[
+                mainCategories[0],
+                { key: "__delivery__", label: "Delivery", urdu: "ڈیلیوری" },
+                ...mainCategories.slice(1),
+              ].map((c) => {
+                const isDelivery = c.key === "__delivery__";
+                const Icon = isDelivery
+                  ? Truck
+                  : categoryIcons[c.key] ?? ShoppingBasket;
                 return (
                   <Link
                     key={c.key}
                     to="/shops"
-                    search={{ category: c.key }}
+                    search={isDelivery ? { delivery: "1" } : { category: c.key }}
                     className="group flex w-[9.5rem] shrink-0 flex-col items-start gap-2.5 rounded-sm border border-white/15 bg-white/10 p-3 transition hover:-translate-y-0.5 hover:border-white/35 hover:bg-white/20 sm:w-auto sm:gap-3 sm:p-4"
                   >
                     <span className="inline-flex h-9 w-9 items-center justify-center rounded-sm bg-white/15 text-accent transition group-hover:bg-primary group-hover:text-primary-foreground sm:h-10 sm:w-10">

@@ -62,6 +62,7 @@ export type Database = {
           established: string | null
           facebook: string | null
           featured: boolean
+          delivery_available: boolean
           gallery: string[]
           hours: Json
           id: string
@@ -90,6 +91,7 @@ export type Database = {
           established?: string | null
           facebook?: string | null
           featured?: boolean
+          delivery_available?: boolean
           gallery?: string[]
           hours?: Json
           id?: string
@@ -118,6 +120,7 @@ export type Database = {
           established?: string | null
           facebook?: string | null
           featured?: boolean
+          delivery_available?: boolean
           gallery?: string[]
           hours?: Json
           id?: string

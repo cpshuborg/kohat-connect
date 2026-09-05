@@ -36,6 +36,7 @@ const searchSchema = z.object({
   area: z.string().optional().catch(undefined),
   sort: z.string().optional().catch(undefined),
   near: z.string().optional().catch(undefined),
+  delivery: z.string().optional().catch(undefined),
 });
 
 type ShopSearch = {
@@ -45,6 +46,7 @@ type ShopSearch = {
   area: string;
   sort: string;
   near: string;
+  delivery: string;
 };
 
 function normalizeSearch(search: z.infer<typeof searchSchema>): ShopSearch {
@@ -55,6 +57,7 @@ function normalizeSearch(search: z.infer<typeof searchSchema>): ShopSearch {
     area: search.area ?? "",
     sort: search.sort ?? "featured",
     near: search.near ?? "",
+    delivery: search.delivery ?? "",
   };
 }
 
@@ -75,7 +78,7 @@ export const Route = createFileRoute("/shops/")({
 
 function ShopsPage() {
   const raw = Route.useSearch();
-  const { q, category, sub, area, sort, near } = normalizeSearch(raw);
+  const { q, category, sub, area, sort, near, delivery } = normalizeSearch(raw);
   const navigate = Route.useNavigate();
   const [qInput, setQInput] = useState(q);
   const [searchMode, setSearchMode] = useState<"all" | "near">(near === "1" ? "near" : "all");
@@ -110,6 +113,8 @@ function ShopsPage() {
             next[key] = undefined;
           } else if (key === "near" && value !== "1") {
             next[key] = undefined;
+          } else if (key === "delivery" && value !== "1") {
+            next[key] = undefined;
           }
         }
         return next;
@@ -134,6 +139,7 @@ function ShopsPage() {
       if (category && s.category !== category) return false;
       if (sub && s.subcategory !== sub) return false;
       if (area && s.area !== area) return false;
+      if (delivery === "1" && !s.deliveryAvailable) return false;
       if (needle) {
         const hay = `${s.name} ${s.categoryLabel} ${s.subcategoryLabel ?? ""} ${s.area} ${s.tagline}`.toLowerCase();
         if (!hay.includes(needle)) return false;
@@ -152,7 +158,7 @@ function ShopsPage() {
       );
     }
     return list;
-  }, [q, category, sub, area, sort, near, location, shops]);
+  }, [q, category, sub, area, sort, near, delivery, location, shops]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -161,7 +167,7 @@ function ShopsPage() {
 
   useEffect(() => {
     setPage(1);
-  }, [q, category, sub, area, sort, near]);
+  }, [q, category, sub, area, sort, near, delivery]);
 
   const activeCount =
     (q ? 1 : 0) +
@@ -169,7 +175,8 @@ function ShopsPage() {
     (sub ? 1 : 0) +
     (area ? 1 : 0) +
     (sort !== "featured" ? 1 : 0) +
-    (near === "1" ? 1 : 0);
+    (near === "1" ? 1 : 0) +
+    (delivery === "1" ? 1 : 0);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -274,6 +281,7 @@ function ShopsPage() {
                   sub={sub}
                   area={area}
                   near={near}
+                  delivery={delivery}
                   onClear={(key) => {
                     applySearch({ [key]: undefined });
                     if (key === "near") setSearchMode("all");
@@ -666,6 +674,7 @@ function ActiveChips({
   sub,
   area,
   near,
+  delivery,
   onClear,
 }: {
   q: string;
@@ -673,11 +682,13 @@ function ActiveChips({
   sub: string;
   area: string;
   near: string;
-  onClear: (key: "q" | "category" | "sub" | "area" | "near") => void;
+  delivery: string;
+  onClear: (key: "q" | "category" | "sub" | "area" | "near" | "delivery") => void;
 }) {
-  const items: Array<{ key: "q" | "category" | "sub" | "area" | "near"; label: string }> = [];
+  const items: Array<{ key: "q" | "category" | "sub" | "area" | "near" | "delivery"; label: string }> = [];
   if (q) items.push({ key: "q", label: `“${q}”` });
   if (near === "1") items.push({ key: "near", label: "Near you" });
+  if (delivery === "1") items.push({ key: "delivery", label: "Delivery" });
   if (category) {
     const m = mainCategories.find((x) => x.key === category);
     items.push({ key: "category", label: m?.label ?? category });
@@ -743,6 +754,15 @@ function ShopRow({ shop: s }: { shop: Shop }) {
         {s.featured && (
           <span className="absolute right-3 top-3 rounded-sm bg-accent px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-accent-foreground">
             Featured
+          </span>
+        )}
+        {s.deliveryAvailable ? (
+          <span className="absolute bottom-3 right-3 rounded-sm bg-emerald-500 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-white">
+            Delivery avail
+          </span>
+        ) : (
+          <span className="absolute bottom-3 right-3 rounded-sm bg-background/95 px-2.5 py-1 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            No delivery
           </span>
         )}
       </Link>

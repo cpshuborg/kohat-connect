@@ -26,6 +26,8 @@ export type Shop = {
   phone: string;
   tagline: string;
   featured?: boolean;
+  /** Offers delivery / home delivery */
+  deliveryAvailable?: boolean;
   lat: number;
   lng: number;
   email?: string;
@@ -105,6 +107,7 @@ export const shops: Shop[] = [
     phone: "+923001234567",
     tagline: "Slow-cooked degi biryani since 1998.",
     featured: true,
+    deliveryAvailable: true,
   },
   {
     slug: "khyber-motors",
@@ -121,6 +124,7 @@ export const shops: Shop[] = [
     phone: "+923001234568",
     tagline: "New & used bikes, spare parts, tuning.",
     featured: true,
+    deliveryAvailable: true,
   },
   {
     slug: "al-madina-furniture",
@@ -137,6 +141,7 @@ export const shops: Shop[] = [
     phone: "+923001234569",
     tagline: "Handcrafted sofas, beds and dining sets.",
     featured: true,
+    deliveryAvailable: true,
   },
   {
     slug: "chai-adda",
@@ -153,6 +158,7 @@ export const shops: Shop[] = [
     phone: "+923001234570",
     tagline: "Doodh patti, paratha rolls, all day.",
     featured: true,
+    deliveryAvailable: true,
   },
   {
     slug: "peshawar-karahi",
@@ -169,6 +175,7 @@ export const shops: Shop[] = [
     phone: "+923001234571",
     tagline: "Namkeen karahi, tikka and BBQ.",
     featured: true,
+    deliveryAvailable: true,
   },
   {
     slug: "smart-mobile-center",
@@ -185,6 +192,7 @@ export const shops: Shop[] = [
     phone: "+923001234572",
     tagline: "New phones, accessories, repairs.",
     featured: true,
+    deliveryAvailable: true,
   },
   {
     slug: "kohat-fabric-house",
@@ -200,6 +208,7 @@ export const shops: Shop[] = [
     whatsapp: "+923001234573",
     phone: "+923001234573",
     tagline: "Lawn, khaddar and shalwar suits.",
+    deliveryAvailable: true,
   },
   {
     slug: "daewoo-ticket-agent",
@@ -215,6 +224,7 @@ export const shops: Shop[] = [
     whatsapp: "+923001234574",
     phone: "+923001234574",
     tagline: "Daewoo, Faisal Movers & Skyways bookings.",
+    deliveryAvailable: true,
   },
   {
     slug: "quetta-cafe",
@@ -230,6 +240,7 @@ export const shops: Shop[] = [
     whatsapp: "+923001234575",
     phone: "+923001234575",
     tagline: "Quetta chai and bun kebab.",
+    deliveryAvailable: true,
     facebook: "https://facebook.com/QuettaCafeKohat",
     instagram: "https://instagram.com/quetta_cafe_kohat",
   },
@@ -247,6 +258,7 @@ export const shops: Shop[] = [
     whatsapp: "+923001234576",
     phone: "+923001234576",
     tagline: "Honda, Suzuki & Yamaha service.",
+    deliveryAvailable: true,
   },
   {
     slug: "madni-biryani-point",
@@ -262,6 +274,7 @@ export const shops: Shop[] = [
     whatsapp: "+923001234577",
     phone: "+923001234577",
     tagline: "Chicken biryani plates from Rs. 250.",
+    deliveryAvailable: true,
   },
   {
     slug: "royal-furniture-mall",
@@ -277,6 +290,7 @@ export const shops: Shop[] = [
     whatsapp: "+923001234578",
     phone: "+923001234578",
     tagline: "Wooden sofas, office chairs, dining.",
+    deliveryAvailable: true,
   },
   {
     slug: "mobile-hub",
@@ -292,6 +306,7 @@ export const shops: Shop[] = [
     whatsapp: "+923001234579",
     phone: "+923001234579",
     tagline: "iPhone, Samsung & accessories.",
+    deliveryAvailable: true,
   },
   {
     slug: "afghan-tikka-house",
@@ -307,6 +322,7 @@ export const shops: Shop[] = [
     whatsapp: "+923001234580",
     phone: "+923001234580",
     tagline: "Charcoal tikka, kababs and naan.",
+    deliveryAvailable: true,
   },
   {
     slug: "sabzi-mandi-stall",
@@ -322,6 +338,7 @@ export const shops: Shop[] = [
     whatsapp: "+923001234581",
     phone: "+923001234581",
     tagline: "Fresh vegetables at wholesale rates.",
+    deliveryAvailable: true,
   },
   {
     slug: "faisal-movers-office",
@@ -337,5 +354,6 @@ export const shops: Shop[] = [
     whatsapp: "+923001234582",
     phone: "+923001234582",
     tagline: "Bookings for Islamabad, Lahore, Karachi.",
+    deliveryAvailable: true,
   },
 ];

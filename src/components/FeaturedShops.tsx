@@ -16,6 +16,22 @@ export interface ShopCardItem {
   phone: string;
   tagline?: string;
   featured?: boolean;
+  deliveryAvailable?: boolean;
+}
+
+function DeliveryBadge({ available }: { available?: boolean }) {
+  if (available) {
+    return (
+      <span className="absolute bottom-2 right-2 rounded-sm bg-emerald-500 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white sm:bottom-3 sm:right-3 sm:px-2.5 sm:py-1 sm:text-xs">
+        Delivery avail
+      </span>
+    );
+  }
+  return (
+    <span className="absolute bottom-2 right-2 rounded-sm bg-background/95 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground sm:bottom-3 sm:right-3 sm:px-2.5 sm:py-1 sm:text-xs">
+      No delivery
+    </span>
+  );
 }
 
 export function ShopCard({ shop: s }: { shop: ShopCardItem }) {
@@ -42,6 +58,7 @@ export function ShopCard({ shop: s }: { shop: ShopCardItem }) {
             Featured
           </span>
         )}
+        <DeliveryBadge available={s.deliveryAvailable} />
       </Link>
       <div className="flex flex-1 flex-col gap-2 p-3 sm:gap-3 sm:p-5">
         <div>
